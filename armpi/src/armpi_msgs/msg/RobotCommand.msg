@@ -1,0 +1,3 @@
+geometry_msgs/Twist base_velocity
+float64[] arm_joint_velocities
+float64 gripper_position

@@ -14,12 +14,7 @@ docker buildx build --platform linux/arm64 -t armpi_env:latest-arm64 .
 ## create container
 
 ```
-docker run -it --rm \
-  --name armpi_dev \
-  --privileged \
-  --net=host \
-  -v $(pwd)/armpi:/root/ros_ws/src/armpi \
-  armpi_env 
+sudo bash scripts/docker_run.sh
 ```
 
 ## How to enter bash from other terminals
