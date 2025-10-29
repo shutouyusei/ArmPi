@@ -13,7 +13,6 @@ RUN useradd -m rosuser && \
 # ROSの環境を読み込む
 RUN echo "source /opt/ros/noetic/setup.bash" >> /home/rosuser/.bashrc && \
   echo "sudo chown -R rosuser:rosuser $ROS_WS" >> /home/rosuser/.bashrc && \
-  echo "export ROS_IP=\$(hostname -I | grep -oE '192\\.168\\.149\\.[0-9]{1,3}' | awk '{print \$1}')" >> /home/rosuser/.bashrc
 
 # 依存パッケージと catkin_tools のインストール
 USER root
