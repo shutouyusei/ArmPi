@@ -41,6 +41,6 @@ docker run -it --rm --name armpi_dev \
 	-v "$HOST_PATH_ARMPI":/home/rosuser/ros_ws/armpi/src \
 	-v "$HOST_PATH_MYAPP":/home/rosuser/ros_ws/myapp/src \
 	-e ROS_MASTER_URI=http://${RPI_IP_V4}:11311 \
-	--add-host $HOSTNAME:$127.0.0.1 --add-host raspberrypi:$RPI_IP_V4 \
+	--add-host $HOSTNAME:127.0.0.1 --add-host raspberrypi:$RPI_IP_V4 \
 	--add-host raspberrypi.local:$RPI_IP_V4 \
 	armpi_env
