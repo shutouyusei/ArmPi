@@ -9,6 +9,30 @@ echo "Mapping ARMPI from: $HOST_PATH_ARMPI"
 echo "Mapping MYAPP from: $HOST_PATH_MYAPP"
 echo "ROS_MASTER_URI:http://$RPI_IP_V4:11311"
 
+case "$(uname -s)" in
+Darwin)
+	ROS_IP_ADDR=$(ipconfig getifaddr en0 2>/dev/null)
+	if [ -z "$ROS_IP_ADDR" ]; then
+		echo "Warning: Could not get IP from 'en0'. Trying 'en1'..."
+		ROS_IP_ADDR=$(ipconfig getifaddr en1 2>/dev/null)
+	fi
+	;;
+Linux)
+	ROS_IP_ADDR=$(hostname -I | grep -oE '192\.168\.149\.[0-9]{1,3}' | awk '{print $1}')
+	;;
+*)
+	echo "Error: Unsupported OS type. Please set ROS_IP_ADDR manually."
+	exit 1
+	;;
+esac
+
+if [ -z "$ROS_IP_ADDR" ]; then
+	echo "Error: Failed to determine local IP address (ROS_IP) in the 192.168.149.x range."
+	echo "Please ensure you are connected to the correct network."
+	exit 1
+fi
+echo "Setting ROS_IP to: $ROS_IP_ADDR"
+
 HOSTNAME=$(hostname)
 
 docker run -it --rm --name armpi_dev \
