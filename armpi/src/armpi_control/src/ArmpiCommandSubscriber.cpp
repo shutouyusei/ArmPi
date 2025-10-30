@@ -1,8 +1,9 @@
-#include "ArmpiCommandSubscriber.h"
+#include <armpi_control/ArmpiCommandSubscriber.h>
 #include <vector>
 #include <string>
 
-ArmpiCommandSubscriber::ArmpiCommandSubscriber(){
+ArmpiCommandSubscriber::ArmpiCommandSubscriber(ros::NodeHandle& nh,std::function<void(const geometry_msgs::Twist&)> drive_function,std::function<void()> arm_function):
+  nh_(nh),drive_function_(drive_function),arm_function_(arm_function) {
   sub_cmd_ = nh_.subscribe("armpi_command", 10, &ArmpiCommandSubscriber::cmdCallback, this);
 
   ROS_INFO("ArmpiCommandSubscriber init");
@@ -10,8 +11,8 @@ ArmpiCommandSubscriber::ArmpiCommandSubscriber(){
 
 void ArmpiCommandSubscriber::cmdCallback(const armpi_operation_msgs::RobotCommand::ConstPtr& msg)
 {
-  ROS_INFO("I heard: [%s]", velocity2String(msg->arm_joint_velocities).c_str());
-  //send armpi_status
+  ROS_INFO("armpi_command received");
+  drive_function_(msg->base_velocity);
 }
 
 std::string ArmpiCommandSubscriber::velocity2String(const std::vector<double>& velocity) {
@@ -25,15 +26,4 @@ std::string ArmpiCommandSubscriber::velocity2String(const std::vector<double>& v
       }
   }
   return joint_velocities_str;
-}
-
-int main(int argc, char **argv)
-{
-  ros::init(argc, argv, "armpi_command_listner");
-
-  ArmpiCommandSubscriber armpi_command_subscriber;
-
-  ros::spin();
-
-  return 0;
 }

@@ -2,12 +2,13 @@
 #include <iostream>
 
 void ArmpiDriver::publishChassisCommand(const geometry_msgs::Twist& base_velocity) {
-    geometry_msgs::Twist twist_cmd;
+    chassis_control::SetVelocity cmd;
 
-    twist_cmd.linear.x = base_velocity.linear.x; // Vx
-    twist_cmd.angular.z = base_velocity.angular.z; // Wz
+    cmd.velocity = base_velocity.linear.x; // Vx
+    cmd.angular = base_velocity.angular.z; // Wz
     
-    pub_chassis_velocity_.publish(twist_cmd);
+    ROS_INFO("driver");
+    pub_chassis_velocity_.publish(cmd);
 }
 
 ArmpiDriver::ArmpiDriver(ros::NodeHandle& nh) : nh_(nh) {
