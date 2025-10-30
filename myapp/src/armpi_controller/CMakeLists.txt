@@ -17,10 +17,15 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(armpi_controller src/ArmpiController.cpp)
+add_executable(armpi_controller
+  src/ArmpiControllerMain.cpp
+  src/KeyboardController.cpp
+)
 
 target_link_libraries(armpi_controller
   ${armpi_command_publisher_LIBRARIES}
   ${catkin_LIBRARIES}
+  ${CMAKE_THREAD_LIBS_INIT}
+  rt
 )
 
