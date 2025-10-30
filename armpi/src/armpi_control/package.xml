@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>armpi_command_subscriber</name>
+  <name>armpi_control</name>
   <version>0.0.0</version>
-  <description>The armpi_command_subscriber package</description>
+  <description>The armpi_control package</description>
 
   <maintainer email="user@todo.todo">Your Name</maintainer>
   <license>TODO</license>
@@ -10,7 +10,11 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <build_depend>roscpp</build_depend>
+  <build_depend>rospy</build_depend>
   <build_depend>armpi_operation_msgs</build_depend>
+  <build_depend>armpi_driver</build_depend>
   <exec_depend>roscpp</exec_depend>
+  <exec_depend>rospy</exec_depend>
   <exec_depend>armpi_operation_msgs</exec_depend>
+  <exec_depend>armpi_driver</exec_depend>
 </package>
