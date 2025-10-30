@@ -4,9 +4,11 @@ RPI_IP_V4="192.168.149.1"
 
 HOST_PATH_ARMPI="$PWD/armpi/src"
 HOST_PATH_MYAPP="$PWD/myapp/src"
+HOST_PATH_SHARE="$PWD/share/src"
 
 echo "Mapping ARMPI from: $HOST_PATH_ARMPI"
 echo "Mapping MYAPP from: $HOST_PATH_MYAPP"
+echo "Mapping SHARE from: $HOST_PATH_SHARE"
 echo "ROS_MASTER_URI:http://$RPI_IP_V4:11311"
 
 case "$(uname -s)" in
@@ -40,6 +42,7 @@ docker run -it --rm --name armpi_dev \
 	--net=host \
 	-v "$HOST_PATH_ARMPI":/home/rosuser/ros_ws/armpi/src \
 	-v "$HOST_PATH_MYAPP":/home/rosuser/ros_ws/myapp/src \
+	-v "$HOST_PATH_SHARE":/home/rosuser/ros_ws/share/src \
 	-e ROS_MASTER_URI=http://${RPI_IP_V4}:11311 \
 	-e ROS_IP=${ROS_IP_ADDR} \
 	--add-host $HOSTNAME:127.0.0.1 --add-host raspberrypi:$RPI_IP_V4 \

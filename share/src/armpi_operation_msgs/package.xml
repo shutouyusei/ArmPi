@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>armpi_msgs</name>
+  <name>armpi_operation_msgs</name>
   <version>0.0.0</version>
-  <description>The armpi_msgs package</description>
+  <description>The armpi_operation_msgs package</description>
 
   <maintainer email="user@todo.todo">Your Name</maintainer>
   <license>TODO</license>
