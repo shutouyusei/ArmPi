@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   hiwonder_servo_msgs
 )
 
+
 add_service_files(
   FILES
   ComputeArmIK.srv
@@ -22,7 +23,14 @@ generate_messages(
 
 catkin_install_python(PROGRAMS
   scripts/ik_action_server.py
+  scripts/test_servo.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES armpi_servo_lib
+  CATKIN_DEPENDS roscpp rospy std_msgs hiwonder_servo_msgs
 )
 
 include_directories(
@@ -30,9 +38,11 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(arm_move_control_lib src/ArmpiServoControl.cpp)
+add_library(armpi_servo_lib
+  src/ArmpiServo.cpp
+)
 
 # ライブラリのリンク
-target_link_libraries(arm_move_control_lib
+target_link_libraries(armpi_servo_lib
   ${catkin_LIBRARIES}
 )

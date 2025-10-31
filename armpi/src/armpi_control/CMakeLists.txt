@@ -5,6 +5,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   armpi_operation_msgs
   armpi_chassis
+  armpi_servo
 )
 catkin_package(
   CATKIN_DEPENDS roscpp armpi_operation_msgs
@@ -13,12 +14,14 @@ catkin_package(
 include_directories(
   include
   ${catkin_INCLUDE_DIRS}
-  ${armpi_driver_INCLUDE_DIRS}
+  ${armpi_chassis_INCLUDE_DIRS}
+  ${armpi_servo_INCLUDE_DIRS}
 )
 
 
 catkin_install_python(PROGRAMS
   scripts/test_driver.py
+  scripts/test_servo.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

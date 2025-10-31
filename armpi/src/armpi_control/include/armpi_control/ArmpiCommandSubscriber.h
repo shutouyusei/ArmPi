@@ -7,10 +7,10 @@
 class ArmpiCommandSubscriber
 {
 public:
-  ArmpiCommandSubscriber(ros::NodeHandle& nh, std::function<void(const geometry_msgs::Twist&)> drive_function,std::function<void()> arm_function);
+  ArmpiCommandSubscriber(ros::NodeHandle& nh, std::function<void(const geometry_msgs::Twist&)> drive_function,std::function<bool(double,double,double,double,double,double)> arm_function);
 private:
   std::function<void(const geometry_msgs::Twist&)> drive_function_;
-  std::function<void()> arm_function_; 
+  std::function<bool(double,double,double,double,double,double)> arm_function_; 
 
   ros::NodeHandle nh_;
   ros::Subscriber sub_cmd_;

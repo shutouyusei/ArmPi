@@ -1,8 +1,8 @@
-#include <armpi_servo/ArmpiServoControl.h>
+#include <armpi_servo/ArmpiServo.h>
 
 // --- コンストラクタとデストラクタ ---
 
-ArmpiServoControl::ArmpiServoControl(ros::NodeHandle& nh)
+ArmpiServo::ArmpiServo(ros::NodeHandle& nh)
     : nh_(nh), ik_service_name_("compute_arm_ik_and_move")
 {
     // サービス接続クライアントの初期化
@@ -11,13 +11,13 @@ ArmpiServoControl::ArmpiServoControl(ros::NodeHandle& nh)
     waitForService();
 }
 
-ArmpiServoControl::~ArmpiServoControl() {
-    ROS_INFO("ArmpiServoControl shutting down.");
+ArmpiServo::~ArmpiServo() {
+    ROS_INFO("ArmpiServo shutting down.");
 }
 
 // --- プライベートメソッド ---
 
-void ArmpiServoControl::waitForService() {
+void ArmpiServo::waitForService() {
     ROS_INFO("Waiting for IK Action Service: %s...", ik_service_name_.c_str());
     // サービスの存在が確認されるまで待機
     ik_client_.waitForExistence();
@@ -26,7 +26,7 @@ void ArmpiServoControl::waitForService() {
 
 // --- パブリックメソッド ---
 
-bool ArmpiServoControl::requestArmMove(double x, double y, double z, double alpha, double alpha1, double alpha2) 
+bool ArmpiServo::requestArmMove(double x, double y, double z, double alpha, double alpha1, double alpha2) 
 {
     // サービスが利用可能か再確認 (なくても通常はwaitForExistence()で十分だが念のため)
     if (!ik_client_.exists()) {

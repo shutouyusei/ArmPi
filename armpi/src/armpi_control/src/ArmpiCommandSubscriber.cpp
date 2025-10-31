@@ -2,7 +2,7 @@
 #include <vector>
 #include <string>
 
-ArmpiCommandSubscriber::ArmpiCommandSubscriber(ros::NodeHandle& nh,std::function<void(const geometry_msgs::Twist&)> drive_function,std::function<void()> arm_function):
+ArmpiCommandSubscriber::ArmpiCommandSubscriber(ros::NodeHandle& nh,std::function<void(const geometry_msgs::Twist&)> drive_function,std::function<bool(double,double,double,double,double,double)> arm_function):
   nh_(nh),drive_function_(drive_function),arm_function_(arm_function) {
   sub_cmd_ = nh_.subscribe("armpi_command", 10, &ArmpiCommandSubscriber::cmdCallback, this);
 

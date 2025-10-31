@@ -20,7 +20,7 @@ include_directories(
 )
 
 add_library(armpi_chassis_lib
-src/ArmpiChassis.cpp
+  src/ArmpiChassis.cpp
 )
 
 target_link_libraries(armpi_chassis_lib

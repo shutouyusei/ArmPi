@@ -1,11 +1,12 @@
 #include <armpi_control/ArmpiControl.h>
 #include <ros/ros.h>
 
-ArmpiControl::ArmpiControl(ros::NodeHandle& nh):nh_(nh),armpi_chassis_(nh) {
+ArmpiControl::ArmpiControl(ros::NodeHandle& nh):nh_(nh),armpi_chassis_(nh),armpi_servo_(nh) {
   command_subscriber_ = new ArmpiCommandSubscriber(
     nh,
     [this](const geometry_msgs::Twist& base_velocity){armpi_chassis_.publishChassisCommand(base_velocity);},
-    []{ROS_INFO("Arm Function is not implemented.");});
+    [this](double x,double y,double z,double alpha,double alpha1,double alpha2){return armpi_servo_.requestArmMove(x,y,z,alpha,alpha1,alpha2);}
+  );
 }
 
 ArmpiControl::~ArmpiControl() {

@@ -2,11 +2,11 @@
 #include <ros/ros.h>
 #include <armpi_servo/ComputeArmIK.h>
 
-class ArmpiServoControl {
+class ArmpiServo {
 public:
-    ArmpiServoControl(ros::NodeHandle& nh);
+    ArmpiServo(ros::NodeHandle& nh);
 
-    ~ArmpiServoControl();
+    ~ArmpiServo();
 
     bool requestArmMove(double x, double y, double z, double alpha = -90.0, double alpha1 = -180.0, double alpha2 = 0.0);
 

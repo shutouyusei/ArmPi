@@ -2,7 +2,7 @@
 # coding=utf8
 import rospy
 import time
-from armpi_pro_kinematics.srv import ComputeArmIK, ComputeArmIKResponse
+from armpi_servo.srv import ComputeArmIK, ComputeArmIKResponse
 from kinematics import ik_transform        # 既存の IK 計算モジュール
 from hiwonder_servo_msgs.msg import MultiRawIdPosDur # サーボ制御メッセージ
 from armpi_pro import bus_servo_control    # 既存のサーボ制御関数 (set_servos)
