@@ -13,72 +13,78 @@ KeyboardController::~KeyboardController() {
     input_thread_.join();
   }
 }
-void KeyboardController::keyProceccing(char& c,bool& speed_changed) {
-  //TODO:ほかの操作も記述する
-  if (read(STDIN_FILENO, &c, 1) > 0) {
-    linear_x_.store(0.0);
-    angular_z_.store(0.0);
+armpi_operation_msgs::RobotCommand KeyboardController::getCommand(char &c) {
+    armpi_operation_msgs::RobotCommand cmd;
+    
+    cmd.base_velocity.linear.x = 0.0;
+    cmd.base_velocity.angular.z = 0.0;
+    
+    cmd.arm_x = 0.0;
+    cmd.arm_y = 0.0;
+    cmd.arm_z = 0.0;
 
     switch (c) {
-      case 'w': case 'W': linear_x_.store(MAX_SPEED); break;
-      case 's': case 'S': linear_x_.store(-MAX_SPEED); break;
-      case 'a': case 'A': angular_z_.store(MAX_TURN); break;
-      case 'd': case 'D': angular_z_.store(-MAX_TURN); break;
-      case ' ':
-        break;
-      case '\x03':
-        running_ = false;
-        ros::shutdown();
-        break;
-      default:
-        speed_changed = false;
-        break;
+        // --- 車体制御 (Twist) ---
+        case 'w': case 'W': cmd.base_velocity.linear.x = MAX_SPEED; break; // 前進
+        case 's': case 'S': cmd.base_velocity.linear.x = -MAX_SPEED; break; // 後退
+        case 'a': case 'A': cmd.base_velocity.angular.z = MAX_TURN; break; // 左旋回
+        case 'd': case 'D': cmd.base_velocity.angular.z = -MAX_TURN; break; // 右旋回
+        
+        // --- アームのXYZ座標制御 (IK) ---
+        // 'o'/'u' で Z軸移動 (上下)
+        case 'o': case 'O': cmd.arm_z = IK_STEP; break; 
+        case 'u': case 'U': cmd.arm_z = -IK_STEP; break;
+        // 'i'/'k' で X軸移動 (前後)
+        case 'i': case 'I': cmd.arm_x = IK_STEP; break;
+        case 'k': case 'K': cmd.arm_x = -IK_STEP; break;
+        // 'j'/'l' で Y軸移動 (左右)
+        case 'j': case 'J': cmd.arm_y = IK_STEP; break;
+        case 'l': case 'L': cmd.arm_y = -IK_STEP; break;
+
+        // --- 特殊コマンド ---
+        case 'r': case 'R': /* グリッパー開閉 (別途フィールドがあれば設定) */ break;
+        case 'f': case 'F': /* アームの初期位置に戻るコマンドなど */ break;
+        case ' ':           /* 停止 (Twistは既に0なので、必要に応じてアームも停止) */ break;
+
+        case '\x03': // Ctrl+C
+            ros::shutdown(); // ROSをシャットダウン
+            break;
+            
+        default:
+            break;
     }
-    if (c != '\x03') {
-      speed_changed = true;
-    }
-  }
+
+    return cmd;
 }
 
 void KeyboardController::keyLoop() {
-  char c;
-  struct termios oldt, newt;
+  char c = 0;
   bool speed_changed = false;
+  struct termios oldt;
+  terminalSetting(oldt);
+
+  ROS_INFO("--- Keyboard Teleop Active ---");
+  armpi_operation_msgs::RobotCommand cmd;
+  while (running_ && ros::ok()) {
+    if (read(STDIN_FILENO, &c, 1) > 0) { 
+      cmd = getCommand(c);
+    }else{
+      cmd = armpi_operationsgs::RobotCommand();
+    }
+    command_publisher_.sendCommand(cmd);
+    ros::Duration(0.001).sleep(); 
+  }
+  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+}
+
+void KeyboardController::terminalSetting(struct termios &oldt) {
+  struct termios  newt;
   tcgetattr(STDIN_FILENO, &oldt);
   newt = oldt;
   newt.c_lflag &= ~(ICANON | ECHO);
   newt.c_cc[VMIN] = 0;
   newt.c_cc[VTIME] = 0;
   tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-
-  ROS_INFO("--- Keyboard Teleop Active ---");
-
-  while (running_) {
-    keyProceccing(c,speed_changed);
-    if (speed_changed) {
-      this->publishCommand();
-      ROS_INFO("Current: Linear=%.2f, Angular=%.2f", linear_x_.load(), angular_z_.load());
-      speed_changed = false;
-    }
-
-    ros::Duration(0.001).sleep(); 
-  }
-  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-}
-
-void KeyboardController::publishCommand() {
-  armpi_operation_msgs::RobotCommand cmd;
-
-  cmd.base_velocity.linear.x = linear_x_.load();
-  cmd.base_velocity.angular.z = angular_z_.load();
-
-  // アームとグリッパーは0に設定
-  // TODO:今後ここも登録する
-  cmd.arm_joint_velocities.resize(4);
-  std::fill(cmd.arm_joint_velocities.begin(), cmd.arm_joint_velocities.end(), 0.0);
-  cmd.gripper_position = 0.0; 
-
-  command_publisher_.sendCommand(cmd); 
 }
 
 void KeyboardController::start() {
