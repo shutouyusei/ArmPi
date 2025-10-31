@@ -5,10 +5,10 @@
 #include <chassis_control/SetVelocity.h>
 
 
-class ArmpiDriver {
+class ArmpiChassis {
 public:
-    ArmpiDriver(ros::NodeHandle& nh);
-    ~ArmpiDriver();
+    ArmpiChassis(ros::NodeHandle& nh);
+    ~ArmpiChassis();
 
     void publishChassisCommand(const geometry_msgs::Twist& base_velocity);
 private:

@@ -19,10 +19,10 @@ private:
 
   std::atomic<float> linear_x_{0.0};
   std::atomic<float> angular_z_{0.0};
-  const float MAX_SPEED = 0.5; 
-  const float MAX_TURN = 1.0; 
+  const float MAX_SPEED = 50.0; 
+  const float MAX_TURN = 0.5; 
 
   void keyLoop();
   void publishCommand();
-  void keyProceccing();
+  void keyProceccing(char& c,bool& speed_changed);
 };

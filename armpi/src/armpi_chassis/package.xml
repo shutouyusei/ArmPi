@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>armpi_driver</name>
+  <name>armpi_chassis</name>
   <version>0.0.0</version>
-  <description>The armpi_driver package</description>
+  <description>The armpi_chassis package</description>
 
   <maintainer email="user@todo.todo">Your Name</maintainer>
   <license>TODO</license>

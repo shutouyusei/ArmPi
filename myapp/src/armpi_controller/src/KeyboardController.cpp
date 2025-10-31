@@ -13,7 +13,7 @@ KeyboardController::~KeyboardController() {
     input_thread_.join();
   }
 }
-void KeyboardController::keyProceccing() {
+void KeyboardController::keyProceccing(char& c,bool& speed_changed) {
   //TODO:ほかの操作も記述する
   if (read(STDIN_FILENO, &c, 1) > 0) {
     linear_x_.store(0.0);
@@ -54,7 +54,7 @@ void KeyboardController::keyLoop() {
   ROS_INFO("--- Keyboard Teleop Active ---");
 
   while (running_) {
-    keyProceccing();
+    keyProceccing(c,speed_changed);
     if (speed_changed) {
       this->publishCommand();
       ROS_INFO("Current: Linear=%.2f, Angular=%.2f", linear_x_.load(), angular_z_.load());

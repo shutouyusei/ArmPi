@@ -1,7 +1,7 @@
-#include <armpi_driver/ArmpiDriver.h>
+#include <armpi_chassis/ArmpiChassis.h>
 #include <iostream>
 
-void ArmpiDriver::publishChassisCommand(const geometry_msgs::Twist& base_velocity) {
+void ArmpiChassis::publishChassisCommand(const geometry_msgs::Twist& base_velocity) {
     chassis_control::SetVelocity cmd;
 
     cmd.velocity = base_velocity.linear.x; // Vx
@@ -14,17 +14,17 @@ void ArmpiDriver::publishChassisCommand(const geometry_msgs::Twist& base_velocit
     pub_chassis_velocity_.publish(cmd);
 }
 
-ArmpiDriver::ArmpiDriver(ros::NodeHandle& nh) : nh_(nh) {
+ArmpiChassis::ArmpiChassis(ros::NodeHandle& nh) : nh_(nh) {
     pub_chassis_velocity_ = nh_.advertise<chassis_control::SetVelocity>("/chassis_control/set_velocity", 10); 
     
-    ROS_INFO("ArmpiDriver Node Ready. Publishing to /cmd_vel.");
+    ROS_INFO("ArmpiChassis Node Ready. Publishing to /cmd_vel.");
 }
 
-ArmpiDriver::~ArmpiDriver() {
+ArmpiChassis::~ArmpiChassis() {
     geometry_msgs::Twist stop_cmd;
     stop_cmd.linear.x = 0.0;
     stop_cmd.angular.z = 0.0;
     pub_chassis_velocity_.publish(stop_cmd);
     
-    ROS_WARN("ArmpiDriver shutting down. Zero velocity published.");
+    ROS_WARN("ArmpiChassis shutting down. Zero velocity published.");
 }

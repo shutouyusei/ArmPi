@@ -4,7 +4,7 @@ project(armpi_control)
 find_package(catkin REQUIRED COMPONENTS
   roscpp
   armpi_operation_msgs
-  armpi_driver
+  armpi_chassis
 )
 catkin_package(
   CATKIN_DEPENDS roscpp armpi_operation_msgs
