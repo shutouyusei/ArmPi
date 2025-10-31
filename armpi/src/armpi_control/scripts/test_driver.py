@@ -48,7 +48,6 @@ def test_subscriber_trigger():
             rospy.loginfo(f"[{i+1}/5] Publishing TURN (Wz=0.5)")
         
         # アーム/グリッパーのダミーデータ（Python側ではこの設定も送信が必要）
-        cmd.arm_joint_velocities = [0.1, 0.0, 0.0, 0.0] 
         cmd.gripper_position = 0.5
         
         # 4. メッセージのPublish

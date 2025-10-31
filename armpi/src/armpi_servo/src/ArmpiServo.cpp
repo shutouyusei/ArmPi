@@ -24,7 +24,6 @@ void ArmpiServo::waitForService() {
     ROS_INFO("IK Service ready.");
 }
 
-// --- パブリックメソッド ---
 
 bool ArmpiServo::requestArmMove(double x, double y, double z, double alpha, double alpha1, double alpha2) 
 {
