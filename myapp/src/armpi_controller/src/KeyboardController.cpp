@@ -69,7 +69,7 @@ void KeyboardController::keyLoop() {
     if (read(STDIN_FILENO, &c, 1) > 0) { 
       cmd = getCommand(c);
     }else{
-      cmd = armpi_operationsgs::RobotCommand();
+      cmd = armpi_operation_msgs::RobotCommand();
     }
     command_publisher_.sendCommand(cmd);
     ros::Duration(0.001).sleep(); 
