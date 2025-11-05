@@ -62,16 +62,27 @@ void KeyboardController::keyLoop() {
   bool speed_changed = false;
   struct termios oldt;
   terminalSetting(oldt);
+  armpi_operation_msgs::RobotCommand last_cmd;
+  last_cmd.base_velocity.linear.x = 0.0;
+  last_cmd.base_velocity.angular.z = 0.0;
+  last_cmd.arm_x = 0.0;
+  last_cmd.arm_y = 0.0;
+  last_cmd.arm_z = 0.0;
 
   ROS_INFO("--- Keyboard Teleop Active ---");
-  armpi_operation_msgs::RobotCommand cmd;
   while (running_ && ros::ok()) {
     if (read(STDIN_FILENO, &c, 1) > 0) { 
-      cmd = getCommand(c);
-    }else{
-      cmd = armpi_operation_msgs::RobotCommand();
+      armpi_operation_msgs::RobotCommand new_cmd = getCommand(c);
+      if (new_cmd.base_velocity.linear.x != 0.0 || new_cmd.base_velocity.angular.z != 0.0 || new_cmd.arm_x != 0.0 || new_cmd.arm_y != 0.0 || new_cmd.arm_z != 0.0) {
+        last_cmd = new_cmd;
+      }
+        c = 0;
     }
-    command_publisher_.sendCommand(cmd);
+    command_publisher_.sendCommand(last_cmd);
+
+    last_cmd.arm_x = 0.0;
+    last_cmd.arm_y = 0.0;
+    last_cmd.arm_z = 0.0;
     ros::Duration(0.001).sleep(); 
   }
   tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
