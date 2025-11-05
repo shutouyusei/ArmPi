@@ -5,6 +5,12 @@
 KeyboardController::KeyboardController(ros::NodeHandle& nh):ArmpiController(nh, "KeyboardController"){
   ROS_INFO("KeyboardController initialized.");
   ROS_INFO("Use 'w/s' for Linear X, 'a/d' for Angular Z, 'Space' for Stop, 'Ctrl+C' to exit.");
+  cmd_.arm_x = 0.0;
+  cmd_.arm_y = 0.12;
+  cmd_.arm_z = 0.15;
+  cmd_.arm_alpha = -90.0;
+  cmd_.arm_alpha1 = -180.0;
+  cmd_.arm_alpha2 = 0.0;
 }
 
 KeyboardController::~KeyboardController() {
@@ -13,33 +19,24 @@ KeyboardController::~KeyboardController() {
     input_thread_.join();
   }
 }
-armpi_operation_msgs::RobotCommand KeyboardController::getCommand(char &c) {
-    armpi_operation_msgs::RobotCommand cmd;
-    
-    cmd.base_velocity.linear.x = 0.0;
-    cmd.base_velocity.angular.z = 0.0;
-    
-    cmd.arm_x = 0.0;
-    cmd.arm_y = 0.0;
-    cmd.arm_z = 0.0;
-
+void KeyboardController::getCommand(char &c) {
     switch (c) {
         // --- 車体制御 (Twist) ---
-        case 'w': case 'W': cmd.base_velocity.linear.x = MAX_SPEED; break; // 前進
-        case 's': case 'S': cmd.base_velocity.linear.x = -MAX_SPEED; break; // 後退
-        case 'a': case 'A': cmd.base_velocity.angular.z = MAX_TURN; break; // 左旋回
-        case 'd': case 'D': cmd.base_velocity.angular.z = -MAX_TURN; break; // 右旋回
+        case 'w': case 'W': cmd_.base_velocity.linear.x = MAX_SPEED; break; // 前進
+        case 's': case 'S': cmd_.base_velocity.linear.x = -MAX_SPEED; break; // 後退
+        case 'a': case 'A': cmd_.base_velocity.angular.z = MAX_TURN; break; // 左旋回
+        case 'd': case 'D': cmd_.base_velocity.angular.z = -MAX_TURN; break; // 右旋回
         
         // --- アームのXYZ座標制御 (IK) ---
         // 'o'/'u' で Z軸移動 (上下)
-        case 'o': case 'O': cmd.arm_z = IK_STEP; break; 
-        case 'u': case 'U': cmd.arm_z = -IK_STEP; break;
-        // 'i'/'k' で X軸移動 (前後)
-        case 'i': case 'I': cmd.arm_x = IK_STEP; break;
-        case 'k': case 'K': cmd.arm_x = -IK_STEP; break;
-        // 'j'/'l' で Y軸移動 (左右)
-        case 'j': case 'J': cmd.arm_y = IK_STEP; break;
-        case 'l': case 'L': cmd.arm_y = -IK_STEP; break;
+        case 'o': case 'O': cmd_.arm_z += IK_STEP; break; 
+        case 'u': case 'U': cmd_.arm_z -= IK_STEP; break;
+        // 'i'/'k' で Y軸移動 (前後)
+        case 'i': case 'I': cmd_.arm_y += IK_STEP; break;
+        case 'k': case 'K': cmd_.arm_y -= IK_STEP; break;
+        // 'j'/'l' で X軸移動 (左右)
+        case 'l': case 'L': cmd_.arm_x += IK_STEP; break;
+        case 'j': case 'J': cmd_.arm_x -= IK_STEP; break;
 
         // --- 特殊コマンド ---
         case 'r': case 'R': /* グリッパー開閉 (別途フィールドがあれば設定) */ break;
@@ -53,8 +50,6 @@ armpi_operation_msgs::RobotCommand KeyboardController::getCommand(char &c) {
         default:
             break;
     }
-
-    return cmd;
 }
 
 void KeyboardController::keyLoop() {
@@ -62,28 +57,19 @@ void KeyboardController::keyLoop() {
   bool speed_changed = false;
   struct termios oldt;
   terminalSetting(oldt);
-  armpi_operation_msgs::RobotCommand last_cmd;
-  last_cmd.base_velocity.linear.x = 0.0;
-  last_cmd.base_velocity.angular.z = 0.0;
-  last_cmd.arm_x = 0.0;
-  last_cmd.arm_y = 0.0;
-  last_cmd.arm_z = 0.0;
 
   ROS_INFO("--- Keyboard Teleop Active ---");
   while (running_ && ros::ok()) {
     if (read(STDIN_FILENO, &c, 1) > 0) { 
-      armpi_operation_msgs::RobotCommand new_cmd = getCommand(c);
-      if (new_cmd.base_velocity.linear.x != 0.0 || new_cmd.base_velocity.angular.z != 0.0 || new_cmd.arm_x != 0.0 || new_cmd.arm_y != 0.0 || new_cmd.arm_z != 0.0) {
-        last_cmd = new_cmd;
-      }
-        c = 0;
+      getCommand(c);
+      c = 0;
+    }else{
+      cmd_.base_velocity.linear.x = 0.0;
+      cmd_.base_velocity.angular.z = 0.0;
     }
-    command_publisher_.sendCommand(last_cmd);
-
-    last_cmd.arm_x = 0.0;
-    last_cmd.arm_y = 0.0;
-    last_cmd.arm_z = 0.0;
-    ros::Duration(0.001).sleep(); 
+    command_publisher_.sendCommand(cmd_);
+    ros::spinOnce();
+    ros::Duration(0.05).sleep(); 
   }
   tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
 }

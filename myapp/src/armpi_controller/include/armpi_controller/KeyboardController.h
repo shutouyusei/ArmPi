@@ -20,7 +20,10 @@ private:
   const float MAX_TURN = 0.5; 
   const float IK_STEP = 0.01;
 
+
+  armpi_operation_msgs::RobotCommand cmd_;
+
   void keyLoop();
   void terminalSetting(struct termios &oldt);
-  armpi_operation_msgs::RobotCommand getCommand(char &c);
+  void getCommand(char &c);
 };
