@@ -4,7 +4,6 @@
 #include <termios.h>
 #include <unistd.h>
 #include <thread>
-#include <atomic> 
 #include <armpi_operation_msgs/RobotCommand.h>
 
 class KeyboardController : public ArmpiController {
@@ -17,12 +16,18 @@ public:
 private:
   std::thread input_thread_;
 
-  std::atomic<float> linear_x_{0.0};
-  std::atomic<float> angular_z_{0.0};
-  const float MAX_SPEED = 0.5; 
-  const float MAX_TURN = 1.0; 
+  const float MAX_SPEED = 100.0; 
+  const float MAX_TURN = 0.5; 
+  const float IK_STEP = 0.005;
+  const float GRIPPER_STEP = 10;
+  const int KEY_BUFFER_SIZE = 16;
+
+
+  armpi_operation_msgs::RobotCommand cmd_;
 
   void keyLoop();
-  void publishCommand();
-  void keyProceccing();
+  void terminalSetting(struct termios &oldt);
+  void getCommand(char &c);
+private:
+  void updateArm(char &c);
 };

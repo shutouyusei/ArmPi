@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(armpi_driver)
+project(armpi_chassis)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -10,7 +10,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 catkin_package(
   INCLUDE_DIRS include
-  LIBRARIES armpi_driver_lib
+  LIBRARIES armpi_chassis_lib
   CATKIN_DEPENDS roscpp chassis_control
 )
 
@@ -19,11 +19,11 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_library(armpi_driver_lib
-src/ArmpiDriver.cpp
+add_library(armpi_chassis_lib
+  src/ArmpiChassis.cpp
 )
 
-target_link_libraries(armpi_driver_lib
+target_link_libraries(armpi_chassis_lib
   ${catkin_LIBRARIES}
   ${chassis_control_LIBRARIES}
 )

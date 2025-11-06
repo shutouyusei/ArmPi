@@ -7,11 +7,6 @@ from armpi_operation_msgs.msg import RobotCommand
 from geometry_msgs.msg import Twist
 
 def test_subscriber_trigger():
-    """
-    C++の ArmpiCommandSubscriber ノードに対して RobotCommand を送信し、
-    内部の drive_function_ (車体制御) がトリガーされるかテストする。
-    """
-    
     # 1. ノードの初期化
     # (anonymous=Trueで、同じノード名を複数実行可能にする)
     rospy.init_node('command_trigger_tester', anonymous=True)
@@ -36,17 +31,23 @@ def test_subscriber_trigger():
 
         # ベース速度 (Twist) の設定
         # iの値に基づいて前進と旋回を交互に設定
+        #
         if i % 2 == 0:
             # 前進 (Vx=0.3)
-            cmd.base_velocity.linear.x = 0.3
-            cmd.base_velocity.angular.z = 0.0
+            cmd.arm_x = 0.00
+            cmd.arm_y = 0.12
+            cmd.arm_z = 0.15
+            cmd.arm_alpha = 0.0
             rospy.loginfo(f"[{i+1}/5] Publishing FORWARD (Vx=0.3)")
         else:
-            # 旋回 (Wz=0.5)
-            cmd.base_velocity.linear.x = 0.0
-            cmd.base_velocity.angular.z = 0.5
+            cmd.arm_x = 0.15
+            cmd.arm_y = 0.12
+            cmd.arm_z = 0.15
             rospy.loginfo(f"[{i+1}/5] Publishing TURN (Wz=0.5)")
         
+        cmd.arm_alpha = -90.0   
+        cmd.arm_alpha1 = -180.0 
+        cmd.arm_alpha2 = 0.0    
         # アーム/グリッパーのダミーデータ（Python側ではこの設定も送信が必要）
         cmd.gripper_position = 0.5
         
