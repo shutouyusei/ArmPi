@@ -5,7 +5,7 @@ ArmpiControl::ArmpiControl(ros::NodeHandle& nh):nh_(nh),armpi_chassis_(nh),armpi
   command_subscriber_ = new ArmpiCommandSubscriber(
     nh,
     [this](const geometry_msgs::Twist& base_velocity){armpi_chassis_.publishChassisCommand(base_velocity);},
-    [this](double x,double y,double z,double alpha,double alpha1,double alpha2){return armpi_servo_.requestArmMove(x,y,z,alpha,alpha1,alpha2);}
+    [this](double x,double y,double z,double gripper,double alpha,double alpha1,double alpha2){return armpi_servo_.requestArmMove(x,y,z,gripper,alpha,alpha1,alpha2);}
   );
 }
 

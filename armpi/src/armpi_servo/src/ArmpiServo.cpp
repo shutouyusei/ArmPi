@@ -25,7 +25,7 @@ void ArmpiServo::waitForService() {
 }
 
 
-bool ArmpiServo::requestArmMove(double x, double y, double z, double alpha, double alpha1, double alpha2) 
+bool ArmpiServo::requestArmMove(double x, double y, double z,double gripper, double alpha, double alpha1, double alpha2) 
 {
     // サービスが利用可能か再確認 (なくても通常はwaitForExistence()で十分だが念のため)
     if (!ik_client_.exists()) {
@@ -43,6 +43,7 @@ bool ArmpiServo::requestArmMove(double x, double y, double z, double alpha, doub
     srv.request.alpha = alpha;
     srv.request.alpha1 = alpha1;
     srv.request.alpha2 = alpha2;
+    srv.request.gripper = gripper;
     
     ROS_INFO("Calling IK service for (%.2f, %.2f, %.2f)...", x, y, z);
     

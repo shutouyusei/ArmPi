@@ -36,13 +36,13 @@ def handle_compute_ik_and_move(req):
     if result:
         _, servo_data, _ = result 
         
-        duration_sec = 0.1 
+        duration_sec = 0.2
         
         bus_servo_control.set_servos(
             joints_pub, 
             duration_sec, 
             (
-                (1, 200), 
+                (1, req.gripper), 
                 (2, 500), 
                 (3, servo_data['servo3']),
                 (4, servo_data['servo4']),

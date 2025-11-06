@@ -8,7 +8,7 @@ public:
 
     ~ArmpiServo();
 
-    bool requestArmMove(double x, double y, double z, double alpha = -90.0, double alpha1 = -180.0, double alpha2 = 0.0);
+    bool requestArmMove(double x, double y, double z,double gripper, double alpha = -90.0, double alpha1 = -180.0, double alpha2 = 0.0);
 
 private:
     ros::NodeHandle nh_;

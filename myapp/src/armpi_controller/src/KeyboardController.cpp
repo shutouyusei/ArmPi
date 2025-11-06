@@ -11,6 +11,7 @@ KeyboardController::KeyboardController(ros::NodeHandle& nh):ArmpiController(nh, 
   cmd_.arm_alpha = -90.0;
   cmd_.arm_alpha1 = -180.0;
   cmd_.arm_alpha2 = 0.0;
+  cmd_.gripper = 200;
 }
 
 KeyboardController::~KeyboardController() {
@@ -20,55 +21,116 @@ KeyboardController::~KeyboardController() {
   }
 }
 void KeyboardController::getCommand(char &c) {
-    switch (c) {
-        // --- 車体制御 (Twist) ---
-        case 'w': case 'W': cmd_.base_velocity.linear.x = MAX_SPEED; break; // 前進
-        case 's': case 'S': cmd_.base_velocity.linear.x = -MAX_SPEED; break; // 後退
-        case 'a': case 'A': cmd_.base_velocity.angular.z = MAX_TURN; break; // 左旋回
-        case 'd': case 'D': cmd_.base_velocity.angular.z = -MAX_TURN; break; // 右旋回
-        
-        // --- アームのXYZ座標制御 (IK) ---
-        // 'o'/'u' で Z軸移動 (上下)
-        case 'o': case 'O': cmd_.arm_z += IK_STEP; break; 
-        case 'u': case 'U': cmd_.arm_z -= IK_STEP; break;
-        // 'i'/'k' で Y軸移動 (前後)
-        case 'i': case 'I': cmd_.arm_y += IK_STEP; break;
-        case 'k': case 'K': cmd_.arm_y -= IK_STEP; break;
-        // 'j'/'l' で X軸移動 (左右)
-        case 'l': case 'L': cmd_.arm_x += IK_STEP; break;
-        case 'j': case 'J': cmd_.arm_x -= IK_STEP; break;
-
-        // --- 特殊コマンド ---
-        case 'r': case 'R': /* グリッパー開閉 (別途フィールドがあれば設定) */ break;
-        case 'f': case 'F': /* アームの初期位置に戻るコマンドなど */ break;
-        case ' ':           /* 停止 (Twistは既に0なので、必要に応じてアームも停止) */ break;
-
-        case '\x03': // Ctrl+C
-            ros::shutdown(); // ROSをシャットダウン
-            break;
-            
-        default:
-            break;
+  switch (c) {
+    // --- 車体制御 (Twist) ---
+    case 'w': case 'W':{
+      if(cmd_.base_velocity.linear.x == 0.0){
+        cmd_.base_velocity.linear.x = MAX_SPEED;  // 前進
+      }
+      break;
     }
+    case 's': case 'S':{
+      if(cmd_.base_velocity.linear.x == 0.0){
+        cmd_.base_velocity.linear.x = -MAX_SPEED; break; // 後退
+      }
+      break;
+    }
+    case 'a': case 'A': {
+      if(cmd_.base_velocity.angular.z == 0.0){
+        cmd_.base_velocity.angular.z = MAX_TURN; break; // 左旋回
+      }
+      break;
+    }
+    case 'd': case 'D':{
+      if(cmd_.base_velocity.angular.z == 0.0){
+        cmd_.base_velocity.angular.z = -MAX_TURN; break; // 右旋回
+      }
+      break;
+    }
+    case '\x03': // Ctrl+C
+      ros::shutdown(); // ROSをシャットダウン
+      break;
+
+    default:
+      updateArm(c);
+      break;
+  }
+}
+
+void KeyboardController::updateArm(char &c) {
+  switch (c){
+    // 'o'/'u' で Z軸移動 (上下)
+    case 'o': case 'O':{
+      if(cmd_.arm_z + IK_STEP <= 0.3){
+        cmd_.arm_z += IK_STEP;
+      }
+      break;
+    }
+    case 'u': case 'U': {
+      if(cmd_.arm_z - IK_STEP >= -0.1){
+        cmd_.arm_z -= IK_STEP;
+      }
+      break;
+    }
+    // 'i'/'k' で Y軸移動 (前後)
+    case 'i': case 'I': {
+      if (cmd_.arm_y + IK_STEP <= 0.3){
+        cmd_.arm_y += IK_STEP;
+      }
+      break;
+    }
+    case 'k': case 'K': {
+      if(cmd_.arm_y - IK_STEP >= -0.1){
+        cmd_.arm_y -= IK_STEP;
+      }
+      break;
+    }
+    // 'j'/'l' で X軸移動 (左右)
+    case 'l': case 'L':{
+      if(cmd_.arm_x + IK_STEP <= 0.3){
+        cmd_.arm_x += IK_STEP;
+      }
+      break;
+    } 
+    case 'j': case 'J': {
+      if (cmd_.arm_x - IK_STEP >= -0.3){
+        cmd_.arm_x -= IK_STEP;
+      }
+      break;
+    }
+    // --- 特殊コマンド ---
+    case 'r': case 'R': {
+      if(cmd_.gripper + GRIPPER_STEP <= 600){
+        cmd_.gripper += GRIPPER_STEP; /* グリッパー開閉 (別途フィールドがあれば設定) */
+      }
+      break;
+    }
+    case 'f': case 'F':{
+      if (cmd_.gripper - GRIPPER_STEP >= 0){
+        cmd_.gripper -= GRIPPER_STEP; /* アームの初期位置に戻るコマンドなど */
+      }
+      break;
+    }
+  }
 }
 
 void KeyboardController::keyLoop() {
-  char c = 0;
+  char key_buffer[KEY_BUFFER_SIZE];
   bool speed_changed = false;
   struct termios oldt;
   terminalSetting(oldt);
-
   ROS_INFO("--- Keyboard Teleop Active ---");
   while (running_ && ros::ok()) {
-    if (read(STDIN_FILENO, &c, 1) > 0) { 
-      getCommand(c);
-      c = 0;
-    }else{
-      cmd_.base_velocity.linear.x = 0.0;
-      cmd_.base_velocity.angular.z = 0.0;
+    cmd_.base_velocity.linear.x = 0.0;
+    cmd_.base_velocity.angular.z = 0.0;
+    size_t bytes_read = read(STDIN_FILENO, key_buffer, KEY_BUFFER_SIZE);
+    if (bytes_read > 0){
+      for (size_t i = 0; i < bytes_read; ++i) {
+        char c = key_buffer[i];
+        getCommand(c);
+      }
     }
     command_publisher_.sendCommand(cmd_);
-    ros::spinOnce();
     ros::Duration(0.05).sleep(); 
   }
   tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
