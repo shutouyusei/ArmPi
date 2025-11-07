@@ -40,6 +40,7 @@ HOSTNAME=$(hostname)
 docker run -it --rm --name armpi_dev \
 	--privileged \
 	--net=host \
+	-e DISPLAY=$DISPLAY \
 	-v "$HOST_PATH_ARMPI":/home/rosuser/ros_ws/armpi/src \
 	-v "$HOST_PATH_MYAPP":/home/rosuser/ros_ws/myapp/src \
 	-v "$HOST_PATH_SHARE":/home/rosuser/ros_ws/share/src \

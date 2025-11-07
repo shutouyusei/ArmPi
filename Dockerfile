@@ -22,6 +22,8 @@ RUN apt-get update && apt-get install -y \
     python3-catkin-tools \
     git \
     build-essential \
+    ros-noetic-image-transport\
+    ros-noetic-cv-bridge\
     && rm -rf /var/lib/apt/lists/*
 
 
