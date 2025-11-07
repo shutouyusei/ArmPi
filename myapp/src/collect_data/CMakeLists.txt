@@ -7,6 +7,8 @@ find_package(catkin REQUIRED COMPONENTS
 )
 
 catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES collect_data_lib
   CATKIN_DEPENDS roscpp sensor_msgs
 )
 

@@ -10,6 +10,7 @@ public:
   ~CollectData();
   void start();
   void finish();
+  bool is_running_=false; 
 
 private:
   void jointStateCallback(const sensor_msgs::JointState::ConstPtr& msg);

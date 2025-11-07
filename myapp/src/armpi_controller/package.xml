@@ -12,8 +12,10 @@
   <build_depend>roscpp</build_depend>
   <build_depend>armpi_operation_msgs</build_depend>
   <build_depend>armpi_command_publisher</build_depend>
+  <build_depend>collect_data</build_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>armpi_operation_msgs</exec_depend>
   <exec_depend>armpi_command_publisher</exec_depend>
+  <exec_depend>collect_data</exec_depend>
 
 </package>

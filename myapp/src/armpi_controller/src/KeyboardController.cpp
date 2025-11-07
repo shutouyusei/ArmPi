@@ -5,54 +5,65 @@
 KeyboardController::KeyboardController(ros::NodeHandle& nh):ArmpiController(nh, "KeyboardController"){
   ROS_INFO("KeyboardController initialized.");
   ROS_INFO("Use 'w/s' for Linear X, 'a/d' for Angular Z, 'Space' for Stop, 'Ctrl+C' to exit.");
-  cmd_.arm_x = 0.0;
-  cmd_.arm_y = 0.12;
-  cmd_.arm_z = 0.15;
-  cmd_.arm_alpha = -90.0;
-  cmd_.arm_alpha1 = -180.0;
-  cmd_.arm_alpha2 = 0.0;
-  cmd_.gripper = 200;
+  terminalSetting(oldt);
 }
 
 KeyboardController::~KeyboardController() {
-  running_ = false;
-  if (input_thread_.joinable()) {
-    input_thread_.join();
+  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+}
+
+void KeyboardController::getCommand() {
+  size_t bytes_read = read(STDIN_FILENO, key_buffer, KEY_BUFFER_SIZE);
+  if (bytes_read > 0){
+    for (size_t i = 0; i < bytes_read; ++i) {
+      char c = key_buffer[i];
+      keyControl(c);
+      updateChassis(c);
+      updateArm(c);
+    }
   }
 }
-void KeyboardController::getCommand(char &c) {
+void KeyboardController::keyControl(char &c) {
+  switch(c){
+    case 'z': case 'Z':
+      if (collect_data_.is_running_ == false) collect_data_.start();
+      else collect_data_.finish();
+      break;
+    case '\x03': // Ctrl+C
+      ros::shutdown(); // ROSをシャットダウン
+      break;
+    default:
+      break;
+  }
+}
+
+void KeyboardController::updateChassis(char &c) {
   switch (c) {
-    // --- 車体制御 (Twist) ---
     case 'w': case 'W':{
       if(cmd_.base_velocity.linear.x == 0.0){
-        cmd_.base_velocity.linear.x = MAX_SPEED;  // 前進
+        cmd_.base_velocity.linear.x = MAX_SPEED;  // move forward
       }
       break;
     }
     case 's': case 'S':{
       if(cmd_.base_velocity.linear.x == 0.0){
-        cmd_.base_velocity.linear.x = -MAX_SPEED; break; // 後退
+        cmd_.base_velocity.linear.x = -MAX_SPEED; break; // back
       }
       break;
     }
     case 'a': case 'A': {
       if(cmd_.base_velocity.angular.z == 0.0){
-        cmd_.base_velocity.angular.z = MAX_TURN; break; // 左旋回
+        cmd_.base_velocity.angular.z = MAX_TURN; break; // turn left
       }
       break;
     }
     case 'd': case 'D':{
       if(cmd_.base_velocity.angular.z == 0.0){
-        cmd_.base_velocity.angular.z = -MAX_TURN; break; // 右旋回
+        cmd_.base_velocity.angular.z = -MAX_TURN; break; // turn right
       }
       break;
     }
-    case '\x03': // Ctrl+C
-      ros::shutdown(); // ROSをシャットダウン
-      break;
-
     default:
-      updateArm(c);
       break;
   }
 }
@@ -114,27 +125,6 @@ void KeyboardController::updateArm(char &c) {
   }
 }
 
-void KeyboardController::keyLoop() {
-  char key_buffer[KEY_BUFFER_SIZE];
-  bool speed_changed = false;
-  struct termios oldt;
-  terminalSetting(oldt);
-  ROS_INFO("--- Keyboard Teleop Active ---");
-  while (running_ && ros::ok()) {
-    cmd_.base_velocity.linear.x = 0.0;
-    cmd_.base_velocity.angular.z = 0.0;
-    size_t bytes_read = read(STDIN_FILENO, key_buffer, KEY_BUFFER_SIZE);
-    if (bytes_read > 0){
-      for (size_t i = 0; i < bytes_read; ++i) {
-        char c = key_buffer[i];
-        getCommand(c);
-      }
-    }
-    command_publisher_.sendCommand(cmd_);
-    ros::Duration(0.05).sleep(); 
-  }
-  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-}
 
 void KeyboardController::terminalSetting(struct termios &oldt) {
   struct termios  newt;
@@ -144,9 +134,4 @@ void KeyboardController::terminalSetting(struct termios &oldt) {
   newt.c_cc[VMIN] = 0;
   newt.c_cc[VTIME] = 0;
   tcsetattr(STDIN_FILENO, TCSANOW, &newt);
-}
-
-void KeyboardController::start() {
-  running_ = true;
-  input_thread_ = std::thread(&KeyboardController::keyLoop, this);
 }

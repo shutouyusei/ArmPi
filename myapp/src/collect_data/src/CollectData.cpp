@@ -8,11 +8,16 @@ CollectData::~CollectData() {
 }
 
 void CollectData::start() {
+  is_running_ = true;
   sub_ = nh_.subscribe("/joint_states", 10, &CollectData::jointStateCallback,this);
 }
 
 void CollectData::finish(){
+  is_running_ = false;
   sub_.shutdown();
+  //save
+  //delete buffer
+  collected_data_.clear();
 }
 
 void CollectData::jointStateCallback(const sensor_msgs::JointState::ConstPtr& msg) {
