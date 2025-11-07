@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>armpi_state_subscriber</name>
+  <version>1.0.0</version>
+  <description>state subscriber</description>
+  <maintainer email="user@todo.todo">user</maintainer>
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+</package>
