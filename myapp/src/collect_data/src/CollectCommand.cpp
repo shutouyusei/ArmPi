@@ -9,6 +9,10 @@ CollectCommand::CollectCommand(ros::NodeHandle& nh): nh_(nh) {
 CollectCommand::~CollectCommand() {}
 
 void CollectCommand::start() {
+  if (shutdown_requested_ == false && worker_thread_.joinable()) {
+    ROS_WARN("ArmpiCamera::start() called while already running. Ignoring.");
+    return; 
+  }
   ROS_INFO("Collecting joint data...");
   collected_data_.clear();
   cmd_queue_.clear();

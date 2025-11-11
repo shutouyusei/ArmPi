@@ -9,6 +9,10 @@ CollectJoint::CollectJoint(ros::NodeHandle& nh): nh_(nh) {
 CollectJoint::~CollectJoint() {}
 
 void CollectJoint::start() {
+  if (shutdown_requested_ == false && worker_thread_.joinable()) {
+    ROS_WARN("ArmpiCamera::start() called while already running. Ignoring.");
+    return; 
+  }
   ROS_INFO("Collecting joint data...");
   collected_data_.clear();
   joint_state_queue_.clear();
@@ -20,7 +24,7 @@ void CollectJoint::start() {
 
 void CollectJoint::finish(){
   if (shutdown_requested_) return;
-  ROS_INFO("Shutting down CollectCommand(Async)...");
+  ROS_INFO("Shutting down CollectJoint(Async)...");
   sub_.shutdown();
 
   shutdown_requested_ = true;
@@ -29,7 +33,7 @@ void CollectJoint::finish(){
     worker_thread_.join();
   }
 
-  ROS_INFO("CollectCommand shutdown complete.");
+  ROS_INFO("CollectJoint shutdown complete.");
 }
 
 void CollectJoint::jointStateCallback(const sensor_msgs::JointState::ConstPtr& msg) {

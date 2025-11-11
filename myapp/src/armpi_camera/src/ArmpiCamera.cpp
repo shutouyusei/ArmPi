@@ -2,7 +2,6 @@
 #include <boost/make_shared.hpp>
 
 ArmpiCamera::ArmpiCamera(ros::NodeHandle& nh):nh_(nh),it_(nh){
-  collected_images_.reserve(30000);
   ROS_INFO("Setup Subscriber for image");
 }
 
@@ -18,9 +17,14 @@ void ArmpiCamera::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
 }
 
 void ArmpiCamera::start() {
+  if (shutdown_requested_ == false && worker_thread_.joinable()) {
+    ROS_WARN("ArmpiCamera::start() called while already running. Ignoring.");
+    return; 
+  }
   ROS_INFO("Starting ArmpiCamera...");
   collected_images_.clear();
   image_queue_.clear();
+  collected_images_.reserve(30000);
   shutdown_requested_ = false;
 
   worker_thread_ = std::thread(&ArmpiCamera::processingThreadLoop, this);
