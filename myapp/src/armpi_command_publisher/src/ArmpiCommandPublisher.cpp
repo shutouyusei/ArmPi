@@ -1,7 +1,7 @@
 #include <armpi_command_publisher/ArmpiCommandPublisher.h>
 
 ArmpiCommandPublisher::ArmpiCommandPublisher(ros::NodeHandle& nh): nh_(nh) {
-  pub_= nh_.advertise<armpi_operation_msgs::RobotCommand>("armpi_command", 10);
+  pub_= nh_.advertise<armpi_operation_msgs::RobotCommand>("armpi_command", 1);
 
 
   ROS_INFO("ArmpiCommandPublisher initialized on /armpi_command.");
@@ -16,8 +16,6 @@ ArmpiCommandPublisher::ArmpiCommandPublisher(ros::NodeHandle& nh): nh_(nh) {
 }
 
 void ArmpiCommandPublisher::sendCommand(armpi_operation_msgs::RobotCommand& msg){
-  msg.header.stamp = ros::Time::now();
-  msg.header.frame_id = "base_link";
   pub_.publish(msg);
   ROS_INFO("Command sent: Base Velo(x)=%.2f", msg.base_velocity.linear.x);
 }

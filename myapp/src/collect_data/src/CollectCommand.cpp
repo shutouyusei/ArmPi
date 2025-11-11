@@ -19,7 +19,7 @@ void CollectCommand::start() {
   shutdown_requested_ = false;
 
   worker_thread_ = std::thread(&CollectCommand::processingThreadLoop, this);
-  sub_ = nh_.subscribe("armpi_command", 1, &CollectCommand::cmdCallback, this);
+  sub_ = nh_.subscribe("get_command", 1, &CollectCommand::cmdCallback, this);
 }
 
 void CollectCommand::finish(){

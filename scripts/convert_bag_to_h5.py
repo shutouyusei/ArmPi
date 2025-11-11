@@ -176,7 +176,7 @@ def convert_bag_to_h5(bag_path, h5_path, custom_msg_file):
 if __name__ == '__main__':
     CUSTOM_MSG_FILE = '~/LIS5/ArmPi/share/src/armpi_operation_msgs/msg/RobotCommand.msg'
 
-    BAG_FILE = 'datasets/data_20251111_021556.bag'
+    BAG_FILE = 'datasets/data_20251111_074241.bag'
     H5_FILE = 'datasets/output_dataset.h5'
 
     if 'datasets/data_20251111_021556.bag' in BAG_FILE:

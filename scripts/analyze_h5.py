@@ -8,7 +8,7 @@ H5_FILE = 'datasets/output_dataset.h5'
 OUTPUT_CSV = 'datasets/synchronized_data.csv' # 分析結果の確認用
 
 # 同期のための許容誤差 (± 50ミリ秒)
-TOLERANCE_MS = 50 
+TOLERANCE_MS = 50
 # -----------------
 
 def load_h5_to_dataframes(h5_path):
