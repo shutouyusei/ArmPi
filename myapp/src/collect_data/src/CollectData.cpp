@@ -47,7 +47,7 @@ std::string CollectData::generateBagFilename(){
   std::tm tm = *std::localtime(&t);
   std::stringstream ss;
   // 例: "data_20251111_104530.bag"
-  ss << "datasets/data_" 
+  ss << "/home/rosuser/ros_ws/datasets/data_" 
     << std::put_time(&tm, "%Y%m%d_%H%M%S")
     << ".bag";
   return ss.str();
