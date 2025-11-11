@@ -8,11 +8,13 @@ CollectData::~CollectData() {
 }
 
 void CollectData::start() {
+  ROS_INFO("Collecting data...");
   is_running_ = true;
   sub_ = nh_.subscribe("/joint_states", 10, &CollectData::jointStateCallback,this);
 }
 
 void CollectData::finish(){
+  ROS_INFO("Finished collecting data.");
   is_running_ = false;
   sub_.shutdown();
   //save
