@@ -1,7 +1,6 @@
 #include <armpi_controller/KeyboardController.h>
 #include <algorithm>
 #include <iostream>
-#include <iostream>
 
 KeyboardController::KeyboardController(ros::NodeHandle& nh, const std::string& task_name):ArmpiController(nh, "KeyboardController",task_name){
   ROS_INFO("KeyboardController initialized.");
