@@ -13,12 +13,12 @@ public:
   void start();
   void finish();
 
-  void getCollectedImages(std::vector<cv_bridge::CvImageConstPtr>& images);
+  void getCollectedImages(std::vector<sensor_msgs::ImageConstPtr>& images);
 
 private:
   void imageCallback(const sensor_msgs::ImageConstPtr& msg);
 private:
-  std::vector<cv_bridge::CvImageConstPtr> collected_images_;
+  std::vector<sensor_msgs::ImageConstPtr> collected_images_;
   ros::NodeHandle nh_;
   image_transport::ImageTransport it_;
   image_transport::Subscriber sub_;

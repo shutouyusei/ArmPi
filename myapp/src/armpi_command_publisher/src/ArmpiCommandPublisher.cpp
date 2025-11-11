@@ -3,6 +3,7 @@
 ArmpiCommandPublisher::ArmpiCommandPublisher(ros::NodeHandle& nh): nh_(nh) {
   pub_= nh_.advertise<armpi_operation_msgs::RobotCommand>("armpi_command", 10);
 
+
   ROS_INFO("ArmpiCommandPublisher initialized on /armpi_command.");
   
   ROS_INFO("Waiting for subscriber connection...");
@@ -14,7 +15,9 @@ ArmpiCommandPublisher::ArmpiCommandPublisher(ros::NodeHandle& nh): nh_(nh) {
   ROS_INFO("Subscriber connected.");
 }
 
-void ArmpiCommandPublisher::sendCommand(const armpi_operation_msgs::RobotCommand& msg){
+void ArmpiCommandPublisher::sendCommand(armpi_operation_msgs::RobotCommand& msg){
+  msg.header.stamp = ros::Time::now();
+  msg.header.frame_id = "base_link";
   pub_.publish(msg);
   ROS_INFO("Command sent: Base Velo(x)=%.2f", msg.base_velocity.linear.x);
 }

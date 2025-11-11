@@ -9,9 +9,17 @@
 
   <buildtool_depend>catkin</buildtool_depend>
 
+  <build_depend>rosbag</build_depend>
+  <build_depend>armpi_operation_msgs</build_depend>
   <build_depend>roscpp</build_depend>
   <build_depend>sensor_msgs</build_depend>
+  <build_depend>armpi_camera</build_depend>
+  <build_depend>armpi_operation_msgs</build_depend>
 
+  <exec_depend>rosbag</exec_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>armpi_operation_msgs</exec_depend>
+  <exec_depend>armpi_camera</exec_depend>
+  <exec_depend>armpi_operation_msgs</exec_depend>
 </package>

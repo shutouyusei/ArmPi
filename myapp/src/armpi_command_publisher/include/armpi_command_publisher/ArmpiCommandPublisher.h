@@ -6,7 +6,7 @@ class ArmpiCommandPublisher
 {
 public:
   ArmpiCommandPublisher(ros::NodeHandle& nh);
-  void sendCommand(const armpi_operation_msgs::RobotCommand& msg);
+  void sendCommand(armpi_operation_msgs::RobotCommand& msg);
 private:
   // create node handle
   ros::NodeHandle nh_;

@@ -7,14 +7,8 @@ ArmpiCamera::ArmpiCamera(ros::NodeHandle& nh):nh_(nh),it_(nh){
 ArmpiCamera::~ArmpiCamera(){}
 
 void ArmpiCamera::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
-  try {
-    cv_bridge::CvImageConstPtr cv_ptr = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::BGR8);
-    // save images
-    collected_images_.push_back(cv_ptr);
-  } catch (cv_bridge::Exception& e) {
-    ROS_ERROR("cv_bridge exception: %s", e.what());
-    return;
-  }
+  // save images
+  collected_images_.push_back(msg);
 }
 
 void ArmpiCamera::start() {
@@ -29,6 +23,6 @@ void ArmpiCamera::finish() {
   collected_images_.clear();
 }
 
-void ArmpiCamera::getCollectedImages(std::vector<cv_bridge::CvImageConstPtr>& images) {
+void ArmpiCamera::getCollectedImages(std::vector<sensor_msgs::ImageConstPtr>& images) {
   images = collected_images_;
 }

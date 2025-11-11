@@ -10,6 +10,7 @@ public:
   ~CollectJoint();
   void start();
   void finish();
+  void getCollectedData(std::vector<sensor_msgs::JointState>& data);
 
 private:
   void jointStateCallback(const sensor_msgs::JointState::ConstPtr& msg);

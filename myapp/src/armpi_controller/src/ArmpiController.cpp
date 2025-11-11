@@ -30,6 +30,7 @@ void ArmpiController::controllerLoop(){
     cmd_.base_velocity.angular.z = 0.0;
     this->getCommand();
     command_publisher_.sendCommand(cmd_);
+    if(collect_data_.is_running_ == true) collect_data_.start();
     ros::Duration(0.05).sleep(); 
   }
 }

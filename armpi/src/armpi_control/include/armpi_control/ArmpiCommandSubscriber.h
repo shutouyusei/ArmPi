@@ -14,6 +14,4 @@ private:
 
   ros::NodeHandle nh_;
   ros::Subscriber sub_cmd_;
-
-  void cmdCallback(const armpi_operation_msgs::RobotCommand::ConstPtr &msg);
 };

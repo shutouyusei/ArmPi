@@ -1,5 +1,12 @@
 #pragma once
 #include <ros/ros.h>
+#include <armpi_camera/ArmpiCamera.h>
+#include <collect_data/CollectData.h>
+#include <collect_data/CollectJoint.h>
+#include <collect_data/CollectCommand.h>
+#include <armpi_operation_msgs/RobotCommand.h>
+#include <vector>
+#include <string>
 
 class CollectData
 {
@@ -8,9 +15,18 @@ public:
   ~CollectData();
   void start();
   void finish();
+  void collectComand(armpi_operation_msgs::RobotCommand& cmd);
   bool is_running_=false; 
 
 private:
+  void saveToRosbag(const std::string& bag_filename, const std::vector<sensor_msgs::ImageConstPtr>& images, const std::vector<sensor_msgs::JointState>& joint_data, const std::vector<armpi_operation_msgs::RobotCommand>& cmd_data);
+  std::string generateBagFilename();
+private:
   ros::NodeHandle nh_;
   ros::Subscriber sub_;
+
+  //data collecting modules
+  ArmpiCamera armpi_camera_;
+  CollectJoint collect_joint_;
+  CollectCommand collect_command_;
 };

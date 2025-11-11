@@ -3,7 +3,6 @@
 #include "ArmpiController.h"
 #include <termios.h>
 #include <unistd.h>
-#include <armpi_operation_msgs/RobotCommand.h>
 
 class KeyboardController : public ArmpiController {
 public:

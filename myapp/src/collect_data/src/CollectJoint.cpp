@@ -14,11 +14,14 @@ void CollectJoint::start() {
 void CollectJoint::finish(){
   ROS_INFO("Finished collecting joint data.");
   sub_.shutdown();
-  //save
   //delete buffer
   collected_data_.clear();
 }
 
 void CollectJoint::jointStateCallback(const sensor_msgs::JointState::ConstPtr& msg) {
   collected_data_.push_back(*msg);
+}
+
+void CollectJoint::getCollectedData(std::vector<sensor_msgs::JointState>& data) {
+  data = collected_data_;
 }
