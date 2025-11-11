@@ -6,7 +6,7 @@
 
 class ArmpiController {
 public:
-  ArmpiController(ros::NodeHandle& nh, const std::string& node_name);
+  ArmpiController(ros::NodeHandle& nh, const std::string& node_name,const std::string& task_name);
 
   virtual ~ArmpiController();
 
@@ -14,6 +14,7 @@ public:
 
 protected:
   virtual void getCommand() = 0;
+  void reset();
 
 private:
   void controllerLoop();

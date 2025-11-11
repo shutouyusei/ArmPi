@@ -6,7 +6,7 @@
 
 class KeyboardController : public ArmpiController {
 public:
-  KeyboardController(ros::NodeHandle& nh);
+  KeyboardController(ros::NodeHandle& nh,const std::string& task_name);
   ~KeyboardController() override;
 
 protected:
@@ -16,6 +16,10 @@ private:
   void keyControl(char &c);
   void updateChassis(char &c);
   void updateArm(char &c);
+
+  bool is_successed();
+
+private:
   static const int KEY_BUFFER_SIZE = 16;
   char key_buffer[KEY_BUFFER_SIZE];
   bool speed_changed = false;

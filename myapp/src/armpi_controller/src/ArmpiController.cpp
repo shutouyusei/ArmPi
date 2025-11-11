@@ -1,7 +1,11 @@
 #include <armpi_controller/ArmpiController.h>
 
-ArmpiController::ArmpiController(ros::NodeHandle& nh,const std::string& node_name):
-  nh_(nh),command_publisher_(nh),collect_data_(nh),node_name_(node_name),running_(false) {
+ArmpiController::ArmpiController(ros::NodeHandle& nh,const std::string& node_name,const std::string& task_name):
+  nh_(nh),command_publisher_(nh),collect_data_(nh,task_name),node_name_(node_name),running_(false) {
+  reset();
+}
+
+void ArmpiController::reset(){
   // initialize armpi
   cmd_.arm_x = 0.0;
   cmd_.arm_y = 0.12;
@@ -10,6 +14,7 @@ ArmpiController::ArmpiController(ros::NodeHandle& nh,const std::string& node_nam
   cmd_.arm_alpha1 = -180.0;
   cmd_.arm_alpha2 = 0.0;
   cmd_.gripper = 200;
+
 }
 
 ArmpiController::~ArmpiController() {

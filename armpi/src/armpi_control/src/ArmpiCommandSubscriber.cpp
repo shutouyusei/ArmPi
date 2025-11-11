@@ -18,7 +18,6 @@ void ArmpiCommandSubscriber::cmdCallback(const armpi_operation_msgs::RobotComman
   new_msg.header.frame_id = "base_link";
   pub_.publish(new_msg);
 
-  ROS_INFO("armpi_command received");
   drive_function_(msg->base_velocity);
   arm_function_(msg->arm_x,msg->arm_y,msg->arm_z,msg->gripper,msg->arm_alpha,msg->arm_alpha1,msg->arm_alpha2);
 }

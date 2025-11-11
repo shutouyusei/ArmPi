@@ -17,5 +17,4 @@ ArmpiCommandPublisher::ArmpiCommandPublisher(ros::NodeHandle& nh): nh_(nh) {
 
 void ArmpiCommandPublisher::sendCommand(armpi_operation_msgs::RobotCommand& msg){
   pub_.publish(msg);
-  ROS_INFO("Command sent: Base Velo(x)=%.2f", msg.base_velocity.linear.x);
 }

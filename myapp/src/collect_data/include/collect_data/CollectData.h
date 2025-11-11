@@ -11,10 +11,10 @@
 class CollectData
 {
 public:
-  CollectData(ros::NodeHandle& nh);
+  CollectData(ros::NodeHandle& nh,const std::string& task_name);
   ~CollectData();
   void start();
-  void finish();
+  void finish(bool save);
   void collectComand(armpi_operation_msgs::RobotCommand& cmd);
   bool is_running_=false; 
 
@@ -24,6 +24,7 @@ private:
 private:
   ros::NodeHandle nh_;
   ros::Subscriber sub_;
+  const std::string task_name_;
 
   //data collecting modules
   ArmpiCamera armpi_camera_;

@@ -1,8 +1,9 @@
 #include <armpi_controller/KeyboardController.h>
 #include <algorithm>
 #include <iostream>
+#include <iostream>
 
-KeyboardController::KeyboardController(ros::NodeHandle& nh):ArmpiController(nh, "KeyboardController"){
+KeyboardController::KeyboardController(ros::NodeHandle& nh, const std::string& task_name):ArmpiController(nh, "KeyboardController",task_name){
   ROS_INFO("KeyboardController initialized.");
   ROS_INFO("Use 'w/s' for Linear X, 'a/d' for Angular Z, 'Space' for Stop, 'Ctrl+C' to exit.");
   terminalSetting(oldt);
@@ -27,7 +28,10 @@ void KeyboardController::keyControl(char &c) {
   switch(c){
     case 'z': case 'Z':
       if (collect_data_.is_running_ == false) collect_data_.start();
-      else collect_data_.finish();
+      else collect_data_.finish(is_successed());
+      break;
+    case '1':
+      reset();
       break;
     case '\x03': // Ctrl+C
       ros::shutdown(); // ROSをシャットダウン
@@ -123,6 +127,17 @@ void KeyboardController::updateArm(char &c) {
       break;
     }
   }
+}
+
+bool KeyboardController::is_successed() {
+  tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
+  std::cout << "Success? (y/n)" << std::endl;
+  std::string input;
+  input.clear();
+  std::getline(std::cin, input);
+  terminalSetting(oldt);
+  if (input == "y" || input == "Y") return true;
+  else return false;
 }
 
 
