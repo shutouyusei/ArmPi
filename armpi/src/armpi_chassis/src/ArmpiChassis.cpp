@@ -15,9 +15,8 @@ void ArmpiChassis::publishChassisCommand(const geometry_msgs::Twist& base_veloci
 }
 
 ArmpiChassis::ArmpiChassis(ros::NodeHandle& nh) : nh_(nh) {
-    pub_chassis_velocity_ = nh_.advertise<chassis_control::SetVelocity>("/chassis_control/set_velocity", 10); 
+    pub_chassis_velocity_ = nh_.advertise<chassis_control::SetVelocity>("/chassis_control/set_velocity", 1); 
     
-    ROS_INFO("ArmpiChassis Node Ready. Publishing to /cmd_vel.");
 }
 
 ArmpiChassis::~ArmpiChassis() {

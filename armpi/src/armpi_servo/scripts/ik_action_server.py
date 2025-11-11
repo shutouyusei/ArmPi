@@ -36,7 +36,7 @@ def handle_compute_ik_and_move(req):
     if result:
         _, servo_data, _ = result 
         
-        duration_sec = 0.2
+        duration_sec = 0.1
         
         bus_servo_control.set_servos(
             joints_pub, 

@@ -1,6 +1,7 @@
 #include <collect_data/CollectJoint.h>
 
 CollectJoint::CollectJoint(ros::NodeHandle& nh): nh_(nh) {
+  collected_data_.reserve(30000);
   ROS_INFO("Setup CollectJoint");
 }
 
@@ -8,7 +9,7 @@ CollectJoint::~CollectJoint() {}
 
 void CollectJoint::start() {
   ROS_INFO("Collecting joint data...");
-  sub_ = nh_.subscribe("/joint_states", 10, &CollectJoint::jointStateCallback,this);
+  sub_ = nh_.subscribe("/joint_states", 1, &CollectJoint::jointStateCallback,this);
 }
 
 void CollectJoint::finish(){

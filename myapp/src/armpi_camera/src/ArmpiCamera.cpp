@@ -1,6 +1,7 @@
 #include <armpi_camera/ArmpiCamera.h>
 
 ArmpiCamera::ArmpiCamera(ros::NodeHandle& nh):nh_(nh),it_(nh){
+  collected_images_.reserve(30000);
   ROS_INFO("Setup Subscriber for image");
 }
 
