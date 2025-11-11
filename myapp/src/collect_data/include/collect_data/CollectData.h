@@ -19,7 +19,7 @@ public:
   bool is_running_=false; 
 
 private:
-  void saveToRosbag(const std::string& bag_filename, const std::vector<sensor_msgs::ImageConstPtr>& images, const std::vector<sensor_msgs::JointState>& joint_data, const std::vector<armpi_operation_msgs::RobotCommand>& cmd_data);
+  void saveToRosbag(const std::string& bag_filename, const std::vector<sensor_msgs::ImageConstPtr>& images, const std::vector<sensor_msgs::JointState::Ptr>& joint_data, const std::vector<armpi_operation_msgs::RobotCommand::Ptr>& cmd_data);
   std::string generateBagFilename();
 private:
   ros::NodeHandle nh_;

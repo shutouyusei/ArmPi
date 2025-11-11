@@ -22,8 +22,8 @@ void CollectData::finish(){
   //---save ----
   //get data
   std::vector<sensor_msgs::ImageConstPtr> images;
-  std::vector<sensor_msgs::JointState> joint_data;
-  std::vector<armpi_operation_msgs::RobotCommand> cmd_data;
+  std::vector<sensor_msgs::JointState::Ptr> joint_data;
+  std::vector<armpi_operation_msgs::RobotCommand::Ptr> cmd_data;
   armpi_camera_.getCollectedImages(images);
   collect_joint_.getCollectedData(joint_data);
   collect_command_.getCollectedData(cmd_data);
@@ -53,7 +53,7 @@ std::string CollectData::generateBagFilename(){
   return ss.str();
 }
 
-void CollectData::saveToRosbag(const std::string& bag_filename, const std::vector<sensor_msgs::ImageConstPtr>& images, const std::vector<sensor_msgs::JointState>& joint_data, const std::vector<armpi_operation_msgs::RobotCommand>& cmd_data){
+void CollectData::saveToRosbag(const std::string& bag_filename, const std::vector<sensor_msgs::ImageConstPtr>& images, const std::vector<sensor_msgs::JointState::Ptr>& joint_data, const std::vector<armpi_operation_msgs::RobotCommand::Ptr>& cmd_data){
   rosbag::Bag bag;
   try {
     bag.open(bag_filename, rosbag::bagmode::Write);
@@ -65,11 +65,11 @@ void CollectData::saveToRosbag(const std::string& bag_filename, const std::vecto
     }
 
     for (const auto& msg : joint_data) {
-      bag.write("/collected/joint_states", msg.header.stamp, msg);
+      bag.write("/collected/joint_states", msg->header.stamp, msg);
     }
 
     for (const auto& msg : cmd_data) {
-      bag.write("/collected/command", msg.header.stamp, msg);
+      bag.write("/collected/command", msg->header.stamp, msg);
     }
 
     bag.close();
