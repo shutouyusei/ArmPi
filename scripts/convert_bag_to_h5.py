@@ -295,8 +295,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # 2. ファイルパスの定義
-    BAG_FILE = f'datasets/bag/{args.filename}.bag'
-    H5_FILE = f'datasets/h5/{args.filename}.h5' # 生データと同期データを両方保存するH5ファイル
+    BAG_FILE = f'datasets/{args.filename}.bag'
+    H5_FILE = f'datasets/{args.filename}.h5' # 生データと同期データを両方保存するH5ファイル
 
     print(f"--- ステップ 1/3: Rosbag から H5 への変換開始 ---")
     print(f"入力BAG: {BAG_FILE}")

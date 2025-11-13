@@ -5,8 +5,8 @@ import cv2
 import os
 
 # --- 設定 ---
-H5_FILE = 'datasets/output_dataset.h5'
-OUTPUT_VIDEO_FILE = 'datasets/output_video_all_frames.mp4'
+H5_FILE = 'datasets/bring_up/data_20251111_093855.h5'
+OUTPUT_VIDEO_FILE = 'datasets/bring_up/data_20251111_093855.mp4'
 # -----------------
 
 def create_video_from_all_frames(h5_path, video_path):
