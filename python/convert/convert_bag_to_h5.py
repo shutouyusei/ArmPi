@@ -22,10 +22,9 @@ COMMAND_FIELDS = [
 ]
 
 # 同期のための許容誤差 (± 50ミリ秒)
-TOLERANCE_MS = 50
 
 # カスタムMSGファイルへのパス
-CUSTOM_MSG_FILE = '~/LIS5/ArmPi/share/src/armpi_operation_msgs/msg/RobotCommand.msg'
+custom_msg_file = '~/LIS5/ArmPi/share/src/armpi_operation_msgs/msg/RobotCommand.msg'
 
 # --- 関数定義 1: BAG -> H5 変換ヘルパー ---
 
@@ -54,7 +53,7 @@ def extract_command_data(msg):
 
 # --- 関数定義 2: BAG -> H5 変換メイン ---
 
-def convert_bag_to_h5(bag_path, h5_path, custom_msg_file):
+def convert_bag_to_h5(bag_path, h5_path):
     """
     ROS1の.bagファイルをHDF5ファイルに変換する (生データを保存)
     """
