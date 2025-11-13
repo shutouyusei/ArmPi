@@ -27,7 +27,7 @@ class MlpNetwork(nn.Module):
             nn.Linear(256, 128),
             nn.ReLU(),
             nn.Dropout(p=0.5),
-            nn.Linear(256, action_output_dim)
+            nn.Linear(128, action_output_dim)
         )
 
     def forward(self, image, state):
