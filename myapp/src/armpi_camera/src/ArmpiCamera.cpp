@@ -1,44 +1,66 @@
-#include <ros/ros.h>
-#include <image_transport/image_transport.h>
-#include <opencv2/highgui/highgui.hpp>
-#include <cv_bridge/cv_bridge.h>
+#include <armpi_camera/ArmpiCamera.h>
+#include <boost/make_shared.hpp>
 
-void imageCallback(const sensor_msgs::ImageConstPtr& msg) {
-  try {
-    cv_bridge::CvImageConstPtr cv_ptr = cv_bridge::toCvShare(msg, sensor_msgs::image_encodings::BGR8);
-    cv::Mat image_bgr = cv_ptr->image;
+ArmpiCamera::ArmpiCamera(ros::NodeHandle& nh):nh_(nh),it_(nh){
+  ROS_INFO("Setup Subscriber for image");
+}
 
-    if (image_bgr.empty()) {
-      ROS_ERROR("Received empty image!");
-      return;
+ArmpiCamera::~ArmpiCamera(){}
+
+void ArmpiCamera::imageCallback(const sensor_msgs::ImageConstPtr& msg) {
+  {
+    std::lock_guard<std::mutex> lock(queue_mutex_);
+    image_queue_.push_back(msg);
+  }
+
+  queue_cv_.notify_one();
+}
+
+void ArmpiCamera::start() {
+  if (shutdown_requested_ == false && worker_thread_.joinable()) {
+    ROS_WARN("ArmpiCamera::start() called while already running. Ignoring.");
+    return; 
+  }
+  ROS_INFO("Starting ArmpiCamera...");
+  collected_images_.clear();
+  image_queue_.clear();
+  collected_images_.reserve(30000);
+  shutdown_requested_ = false;
+
+  worker_thread_ = std::thread(&ArmpiCamera::processingThreadLoop, this);
+  sub_ = it_.subscribe("/usb_cam/image_raw", 1, &ArmpiCamera::imageCallback,this);
+}
+
+void ArmpiCamera::finish() {
+  if (shutdown_requested_) return;
+  ROS_INFO("Shutting down ArmpiCamera (Async)...");
+  sub_.shutdown();
+
+  shutdown_requested_ = true;
+  queue_cv_.notify_one(); 
+  if (worker_thread_.joinable()) {
+    worker_thread_.join();
+  }
+
+  ROS_INFO("ArmpiCamera shutdown complete.");
+}
+
+
+void ArmpiCamera::processingThreadLoop() {
+  while (ros::ok() && !shutdown_requested_) {
+    sensor_msgs::ImagePtr msg_to_process = boost::make_shared<sensor_msgs::Image>();
+    {
+      std::unique_lock<std::mutex> lock(queue_mutex_);
+      queue_cv_.wait(lock, [this]{ return !image_queue_.empty() || shutdown_requested_; });
+      if (shutdown_requested_ && image_queue_.empty()) break;
+
+      *msg_to_process = *(image_queue_.front());
+      image_queue_.pop_front();
     }
-
-    ROS_INFO("Image received: %d x %d (Type: %s)", 
-             image_bgr.cols, image_bgr.rows, 
-             cv_ptr->encoding.c_str());
-
-  } catch (cv_bridge::Exception& e) {
-    ROS_ERROR("cv_bridge exception: %s", e.what());
-    return;
+    collected_images_.push_back(msg_to_process);
   }
 }
 
-int main(int argc, char** argv) {
-  ROS_INFO("Setup Subscriber for image");
-  // 1. ROSノードの初期化
-  ros::init(argc, argv, "cpp_image_subscriber");
-  ros::NodeHandle nh;
-  // 2. image_transport の初期化
-  image_transport::ImageTransport it(nh);
-
-  // 3. /usb_cam/image_raw トピックの購読
-  // image_transport::Subscriber を使用して、Imageメッセージを購読する
-  image_transport::Subscriber sub = it.subscribe("/usb_cam/image_raw", 1, imageCallback);
-
-  ROS_INFO("Listening for images on /usb_cam/image_raw...");
-
-  // 4. メッセージ処理ループ
-  ros::spin(); 
-
-  return 0;
+void ArmpiCamera::getCollectedImages(std::vector<sensor_msgs::ImageConstPtr>& images) {
+  images = collected_images_;
 }

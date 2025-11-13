@@ -4,6 +4,10 @@
 #include <memory>
 
 int main(int argc, char **argv) {
+  if (argc = 0 ){
+    ROS_ERROR("Please set task name");
+    return 0;
+  }
   ros::init(argc, argv, "generic_robot_controller");
   ros::NodeHandle nh;
 
@@ -13,15 +17,14 @@ int main(int argc, char **argv) {
   nh.param<std::string>("controller_type", controller_type, "keyboard");
 
   if (controller_type == "keyboard") {
-    controller = std::make_unique<KeyboardController>(nh);
+    controller = std::make_unique<KeyboardController>(nh,argv[1]);
   } else {
     ROS_ERROR("Unknown controller type: %s. Using default (keyboard).", controller_type.c_str());
-    controller = std::make_unique<KeyboardController>(nh);
+    controller = std::make_unique<KeyboardController>(nh,argv[1]);
   }
 
   if (controller) {
     controller->start();
-    ROS_INFO("Controller Node Running: Type=%s", controller_type.c_str());
     ros::spin(); 
   }
 

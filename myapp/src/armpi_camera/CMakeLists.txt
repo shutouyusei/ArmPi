@@ -11,6 +11,8 @@ find_package(catkin REQUIRED COMPONENTS
 find_package(OpenCV REQUIRED)
 
 catkin_package(
+  INCLUDE_DIRS include
+  LIBRARIES armpi_camera_lib
   CATKIN_DEPENDS roscpp sensor_msgs image_transport cv_bridge
 )
 
@@ -22,11 +24,11 @@ include_directories(
 
 
 
-add_executable(armpi_camera
+add_library(armpi_camera_lib
   src/ArmpiCamera.cpp
 )
 
-target_link_libraries(armpi_camera
+target_link_libraries(armpi_camera_lib
   ${catkin_LIBRARIES}
   ${OpenCV_LIBS}
 )

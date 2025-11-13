@@ -36,7 +36,7 @@ def handle_compute_ik_and_move(req):
     if result:
         _, servo_data, _ = result 
         
-        duration_sec = 0.2
+        duration_sec = 0.1
         
         bus_servo_control.set_servos(
             joints_pub, 
@@ -57,7 +57,6 @@ def handle_compute_ik_and_move(req):
         response.servo5 = servo_data['servo5']
         response.servo6 = servo_data['servo6']
         
-        rospy.loginfo("IK & Move Success: (%.2f, %.2f, %.2f) -> Arm moved.", req.x, req.y, req.z)
     else:
         response.success = False
         rospy.logwarn("IK & Move Failed: No solution found for (%.2f, %.2f, %.2f).", req.x, req.y, req.z)

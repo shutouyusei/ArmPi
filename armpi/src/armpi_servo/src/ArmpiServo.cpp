@@ -45,12 +45,9 @@ bool ArmpiServo::requestArmMove(double x, double y, double z,double gripper, dou
     srv.request.alpha2 = alpha2;
     srv.request.gripper = gripper;
     
-    ROS_INFO("Calling IK service for (%.2f, %.2f, %.2f)...", x, y, z);
-    
     // サービスを呼び出し
     if (ik_client_.call(srv)) {
         if (srv.response.success) {
-            ROS_INFO("Move successful! S3=%d, S4=%d", srv.response.servo3, srv.response.servo4);
             return true;
         } else {
             ROS_WARN("Move failed: IK found no solution.");

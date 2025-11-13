@@ -1,19 +1,36 @@
 #pragma once
 #include <ros/ros.h>
 #include <armpi_command_publisher/ArmpiCommandPublisher.h>
+#include <collect_data/CollectData.h>
+#include <thread>
 
 class ArmpiController {
 public:
-  ArmpiController(ros::NodeHandle& nh, const std::string& node_name) 
-  : nh_(nh), command_publisher_(nh), node_name_(node_name), running_(false) {}
+  ArmpiController(ros::NodeHandle& nh, const std::string& node_name,const std::string& task_name);
 
-  virtual ~ArmpiController() = default;
+  virtual ~ArmpiController();
 
-  virtual void start() = 0; 
+  void start(); 
 
 protected:
+  virtual void getCommand() = 0;
+  void reset();
+
+private:
+  void controllerLoop();
+protected:
   ros::NodeHandle nh_;
-  ArmpiCommandPublisher command_publisher_;
   std::string node_name_;
+  CollectData collect_data_;
+
+  // armpi controller constants
+  const float MAX_SPEED = 100.0; 
+  const float MAX_TURN = 0.5; 
+  const float IK_STEP = 0.005;
+  const float GRIPPER_STEP = 10;
+  armpi_operation_msgs::RobotCommand cmd_;
+private:
+  ArmpiCommandPublisher command_publisher_;
   bool running_;
+  std::thread input_thread_;
 };

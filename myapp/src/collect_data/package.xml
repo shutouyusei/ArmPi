@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>collect_data</name>
+  <version>0.0.0</version>
+  <description>The collect_data package</description>
+
+  <maintainer email="user@todo.todo">Your Name</maintainer>
+  <license>TODO</license>
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <build_depend>rosbag</build_depend>
+  <build_depend>armpi_operation_msgs</build_depend>
+  <build_depend>roscpp</build_depend>
+  <build_depend>sensor_msgs</build_depend>
+  <build_depend>armpi_camera</build_depend>
+  <build_depend>armpi_operation_msgs</build_depend>
+
+  <exec_depend>rosbag</exec_depend>
+  <exec_depend>roscpp</exec_depend>
+  <exec_depend>sensor_msgs</exec_depend>
+  <exec_depend>armpi_operation_msgs</exec_depend>
+  <exec_depend>armpi_camera</exec_depend>
+  <exec_depend>armpi_operation_msgs</exec_depend>
+</package>

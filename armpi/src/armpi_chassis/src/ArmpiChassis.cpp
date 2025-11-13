@@ -7,17 +7,12 @@ void ArmpiChassis::publishChassisCommand(const geometry_msgs::Twist& base_veloci
     cmd.velocity = base_velocity.linear.x; // Vx
     cmd.angular = base_velocity.angular.z; // Wz
     cmd.direction = 90.0;
-    
-    ROS_INFO("velocity: %f", cmd.velocity);
-    ROS_INFO("angular: %f", cmd.angular);
-    ROS_INFO("direction: %f", cmd.direction);
     pub_chassis_velocity_.publish(cmd);
 }
 
 ArmpiChassis::ArmpiChassis(ros::NodeHandle& nh) : nh_(nh) {
-    pub_chassis_velocity_ = nh_.advertise<chassis_control::SetVelocity>("/chassis_control/set_velocity", 10); 
+    pub_chassis_velocity_ = nh_.advertise<chassis_control::SetVelocity>("/chassis_control/set_velocity", 1); 
     
-    ROS_INFO("ArmpiChassis Node Ready. Publishing to /cmd_vel.");
 }
 
 ArmpiChassis::~ArmpiChassis() {
