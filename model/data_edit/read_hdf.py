@@ -18,7 +18,9 @@ class ReadHDF:
         df_synced_list = []
         for file in hdf_files:
             try:
-                df_synced_list.append(pd.read_hdf(file, key=self.KEY_NAME))
+                sync_data = pd.read_hdf(file, key=self.KEY_NAME)
+                sync_data['file_path'] = file
+                df_synced_list.append(sync_data)
             except KeyError:
                 print(f"ERROR:{file} does not have {self.KEY_NAME} key")
             except Exception as e:
@@ -39,4 +41,4 @@ if __name__ == '__main__':
     args = parser.parse_args()
     read_hdf = ReadHDF()
     df_synced_list = read_hdf.read_hdf(args.foldername)
-    print(df_synced_list[0].head)
+    print(df_synced_list[0].iloc[0])
