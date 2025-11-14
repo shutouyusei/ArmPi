@@ -20,5 +20,5 @@ if __name__ == '__main__':
 
     model = MlpNetwork(state_input_dim=full_dataset.state_dim, action_output_dim=full_dataset.action_dim)
 
-    trainer = Train(train_loader,val_loader,model,"model/result/model.pt")
+    trainer = Train(train_loader,val_loader,model,"model/result/model.pt",epochs=100)
     trainer.train()
