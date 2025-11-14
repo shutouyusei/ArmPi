@@ -30,5 +30,6 @@ catkin_package(
 catkin_install_python(
   PROGRAMS
   scripts/inference_server.py
+  test/test_inference_server.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
