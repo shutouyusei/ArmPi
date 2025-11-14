@@ -93,6 +93,24 @@ class InferenceServer:
 
 if __name__ == '__main__':
     rospy.init_node("imitation_service_server")
-    MODEL_FILE = "./src/ai_model_service/model/model.pt"
+    import rospkg
+    import os
+    
+    try:
+        rospack = rospkg.RosPack()
+        pkg_path = rospack.get_path('ai_model_service') 
+    except rospkg.common.ResourceNotFound:
+        rospy.logfatal("Package 'ai_model_service' not found.")
+        rospy.signal_shutdown("Package not found")
+        exit()
+
+    MODEL_FILE = os.path.join(pkg_path, "model", "model.pt") 
+    
+    rospy.loginfo(f"Loading model from: {MODEL_FILE}")
+
+    if not os.path.exists(MODEL_FILE):
+        rospy.logfatal(f"CRITICAL: Model file not found at {MODEL_FILE}")
+        rospy.signal_shutdown("Model file not found")
+        exit()
     server = InferenceServer(MODEL_FILE)
     rospy.spin()

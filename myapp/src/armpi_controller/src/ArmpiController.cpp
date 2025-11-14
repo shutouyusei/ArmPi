@@ -9,12 +9,11 @@ void ArmpiController::reset(){
   // initialize armpi
   cmd_.arm_x = 0.0;
   cmd_.arm_y = 0.12;
-  cmd_.arm_z = 0.8;
+  cmd_.arm_z = 0.15;
   cmd_.arm_alpha = -90.0;
   cmd_.arm_alpha1 = -180.0;
   cmd_.arm_alpha2 = 0.0;
   cmd_.gripper = 200;
-
 }
 
 ArmpiController::~ArmpiController() {

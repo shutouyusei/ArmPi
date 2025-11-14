@@ -6,10 +6,11 @@ find_package(catkin REQUIRED COMPONENTS
   armpi_operation_msgs
   armpi_command_publisher
   collect_data
+  ai_model_service
 )
 
 catkin_package(
-  CATKIN_DEPENDS roscpp armpi_operation_msgs armpi_command_publisher collect_data
+  CATKIN_DEPENDS roscpp armpi_operation_msgs armpi_command_publisher collect_data ai_model_service
 )
 
 include_directories(
@@ -23,6 +24,7 @@ add_executable(armpi_controller
   src/ArmpiControllerMain.cpp
   src/ArmpiController.cpp
   src/KeyboardController.cpp
+  src/AIController.cpp
 )
 
 target_link_libraries(armpi_controller
