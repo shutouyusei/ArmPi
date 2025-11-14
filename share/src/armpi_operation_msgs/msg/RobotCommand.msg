@@ -1,3 +1,4 @@
+#TODO:コマンドをboolなどで管理したい
 std_msgs/Header header
 geometry_msgs/Twist base_velocity
 float64 arm_x
