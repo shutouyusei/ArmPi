@@ -27,7 +27,6 @@ catkin_install_python(PROGRAMS
 
 add_executable(armpi_control
   src/ArmpiControl.cpp
-  src/ArmpiCommandSubscriber.cpp
 )
 
 target_link_libraries(armpi_control

@@ -25,7 +25,7 @@ COMMAND_FIELDS = [
     "arm_alpha"
     "arm_alpha1"
     "arm_alpha2"
-    "gripper_open"
+    "gripper_close"
 ]
 
 
@@ -49,7 +49,7 @@ def extract_command_data(msg):
         msg.arm_alpha
         msg.arm_alpha1
         msg.arm_alpha2
-        msg.gripper_open
+        msg.gripper_close
     ]
 
 # --- 関数定義 2: BAG -> H5 変換メイン ---

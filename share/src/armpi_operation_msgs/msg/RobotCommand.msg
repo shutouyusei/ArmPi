@@ -13,4 +13,4 @@ int8 arm_alpha
 int8 arm_alpha1
 int8 arm_alpha2
 
-int8 gripper_open
+int8 gripper_close

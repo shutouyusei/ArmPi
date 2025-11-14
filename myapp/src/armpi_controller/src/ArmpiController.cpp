@@ -19,7 +19,7 @@ void ArmpiController::reset() {
   cmd_.arm_alpha = 0;
   cmd_.arm_alpha1 = 0;
   cmd_.arm_alpha2 = 0;
-  cmd_.gripper_open = 0;
+  cmd_.gripper_close = 0;
 }
 
 ArmpiController::~ArmpiController() {

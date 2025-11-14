@@ -121,12 +121,12 @@ void KeyboardController::updateArm(char &c) {
   // --- 特殊コマンド ---
   case 'r':
   case 'R': {
-    cmd_.gripper_open = 1;
+    cmd_.gripper_close = 1;
     break;
   }
   case 'f':
   case 'F': {
-    cmd_.gripper_open = -1;
+    cmd_.gripper_close = -1;
     break;
   }
   }

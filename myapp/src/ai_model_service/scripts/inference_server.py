@@ -23,7 +23,7 @@ class InferenceServer:
             "arm_alpha",
             "arm_alpha1",
             "arm_alpha2",
-            "gripper_open",
+            "gripper_close",
         ]
         self.state_columns = [
             "joint1_pos",
@@ -91,7 +91,7 @@ class InferenceServer:
         cmd_msg.arm_alpha = predicted_actions[6]
         cmd_msg.arm_alpha1 = predicted_actions[7]
         cmd_msg.arm_alpha2 = predicted_actions[8]
-        cmd_msg.gripper_open = predicted_actions[9]
+        cmd_msg.gripper_close = predicted_actions[9]
 
         return cmd_msg
 
