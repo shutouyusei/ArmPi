@@ -1,21 +1,30 @@
 #pragma once
 
-#include <ros/ros.h>
-#include <geometry_msgs/Twist.h>
 #include <chassis_control/SetVelocity.h>
+#include <ros/ros.h>
 
+struct ChassisCommand {
+  int move_forward = 0;
+  int move_right = 0;
+  int angular = 0;
+};
 
 class ArmpiChassis {
 public:
-    ArmpiChassis(ros::NodeHandle& nh);
-    ~ArmpiChassis();
+  ArmpiChassis(ros::NodeHandle &nh);
+  ~ArmpiChassis();
 
-    void publishChassisCommand(const geometry_msgs::Twist& base_velocity);
+  void publishChassisCommand(const ChassisCommand &command);
+
 private:
-    ros::NodeHandle nh_;
-    ros::Publisher pub_chassis_velocity_;
-    
-    const double LINEAR_SCALE = 0.005; 
-    const double ANGULAR_SCALE = 0.005;
+  float getMove(const int move);
+  float getAngular(const int angular);
 
+private:
+  ros::NodeHandle nh_;
+  ros::Publisher pub_chassis_velocity_;
+
+  const float MAX_SPEED = 100.0;
+  const float MAX_TURN = 0.5;
+  const ChassisCommand STOP = {0, 0, 0};
 };

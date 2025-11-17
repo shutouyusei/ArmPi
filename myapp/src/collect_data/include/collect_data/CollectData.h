@@ -1,6 +1,6 @@
 #pragma once
 #include <ros/ros.h>
-#include <armpi_camera/ArmpiCamera.h>
+#include <collect_data/CollectCamera.h>
 #include <collect_data/CollectData.h>
 #include <collect_data/CollectJoint.h>
 #include <collect_data/CollectCommand.h>

@@ -15,15 +15,18 @@ from rosbags.typesys import get_types_from_msg # スニペットから
 
 # コマンドメッセージのフィールド定義
 COMMAND_FIELDS = [
-    "base_vel_linear_x", "base_vel_linear_y", "base_vel_linear_z",
-    "base_vel_angular_x", "base_vel_angular_y", "base_vel_angular_z",
-    "arm_x", "arm_y", "arm_z", "gripper", "arm_alpha", "arm_alpha1",
-    "arm_alpha2", "gripper_position"
+    "chassis_move_forward",
+    "chassis_move_right",
+    "angular_right",
+    "arm_x",
+    "arm_y",
+    "arm_z",
+    "arm_alpha",
+    "rotation",
+    "gripper_close"
 ]
 
-# 同期のための許容誤差 (± 50ミリ秒)
 
-# カスタムMSGファイルへのパス
 custom_msg_file = '~/LIS5/ArmPi/share/src/armpi_operation_msgs/msg/RobotCommand.msg'
 
 # --- 関数定義 1: BAG -> H5 変換ヘルパー ---
@@ -35,20 +38,15 @@ def get_ros_time(stamp):
 def extract_command_data(msg):
     """RobotCommandメッセージをフラットなリストに変換"""
     return [
-        msg.base_velocity.linear.x,
-        msg.base_velocity.linear.y,
-        msg.base_velocity.linear.z,
-        msg.base_velocity.angular.x,
-        msg.base_velocity.angular.y,
-        msg.base_velocity.angular.z,
+        msg.chassis_move_forward,
+        msg.chassis_move_right,
+        msg.angular_right,
         msg.arm_x,
         msg.arm_y,
         msg.arm_z,
-        msg.gripper,
         msg.arm_alpha,
-        msg.arm_alpha1,
-        msg.arm_alpha2,
-        msg.gripper_position,
+        msg.rotation,
+        msg.gripper_close
     ]
 
 # --- 関数定義 2: BAG -> H5 変換メイン ---

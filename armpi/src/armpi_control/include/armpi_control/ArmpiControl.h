@@ -1,17 +1,20 @@
 #pragma once
-#include <ros/ros.h>
-#include <armpi_control/ArmpiCommandSubscriber.h>
 #include <armpi_chassis/ArmpiChassis.h>
 #include <armpi_servo/ArmpiServo.h>
-#include <functional>
+#include <ros/ros.h>
+#include <armpi_operation_msgs/RobotCommand.h>
 
-class ArmpiControl{
+class ArmpiControl {
 public:
-  ArmpiControl(ros::NodeHandle& nh);
-  ~ArmpiControl();
+  ArmpiControl(ros::NodeHandle &nh);
+
 private:
   ros::NodeHandle nh_;
-  ArmpiCommandSubscriber *command_subscriber_;
+  ros::Subscriber sub_cmd_;
+  ros::Publisher pub_;
   ArmpiChassis armpi_chassis_;
   ArmpiServo armpi_servo_;
+
+private:
+  void cmdCallback(const armpi_operation_msgs::RobotCommand::ConstPtr &msg);
 };

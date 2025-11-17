@@ -43,7 +43,7 @@ def handle_compute_ik_and_move(req):
             duration_sec, 
             (
                 (1, req.gripper), 
-                (2, 500), 
+                (2, req.rotation),
                 (3, servo_data['servo3']),
                 (4, servo_data['servo4']),
                 (5, servo_data['servo5']),

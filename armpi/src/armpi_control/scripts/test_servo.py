@@ -46,8 +46,7 @@ def test_subscriber_trigger():
             rospy.loginfo(f"[{i+1}/5] Publishing TURN (Wz=0.5)")
         
         cmd.arm_alpha = -90.0   
-        cmd.arm_alpha1 = -180.0 
-        cmd.arm_alpha2 = 0.0    
+        cmd.rotation = 500;
         # アーム/グリッパーのダミーデータ（Python側ではこの設定も送信が必要）
         cmd.gripper_position = 0.5
         

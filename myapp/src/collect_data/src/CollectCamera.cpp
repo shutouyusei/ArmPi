@@ -1,4 +1,4 @@
-#include <armpi_camera/ArmpiCamera.h>
+#include <collect_data/CollectCamera.h>
 #include <boost/make_shared.hpp>
 
 ArmpiCamera::ArmpiCamera(ros::NodeHandle& nh):nh_(nh),it_(nh){

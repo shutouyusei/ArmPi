@@ -1,10 +1,16 @@
 std_msgs/Header header
-geometry_msgs/Twist base_velocity
-float64 arm_x
-float64 arm_y
-float64 arm_z
-float64 gripper
-float64 arm_alpha
-float64 arm_alpha1
-float64 arm_alpha2
-float64 gripper_position
+# chassis
+int8 chassis_move_forward
+int8 chassis_move_right
+int8 angular_right
+
+# arm
+int8 arm_x
+int8 arm_y
+int8 arm_z
+
+int8 arm_alpha
+
+int8 rotation
+
+int8 gripper_close

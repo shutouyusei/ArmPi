@@ -8,6 +8,7 @@ float64 z
 
 #graps
 float64 gripper
+float64 rotation 
 # ピッチ角の目標値と範囲 (度)
 float64 alpha
 float64 alpha1
