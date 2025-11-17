@@ -18,7 +18,6 @@ class ArmpiDataset(Dataset):
         self.master_index = pd.concat(all_sync_data, ignore_index=True)
 
         self.image_dataset_key = "images/data"
-        self.action_dim = 14
         self.action_columns = [
             "chassis_move_forward",
             "chassis_move_right",
@@ -30,7 +29,6 @@ class ArmpiDataset(Dataset):
             "rotation",
             "gripper_close",
         ]
-        self.state_dim = 6
         self.state_columns = [
             "joint1_pos",
             "joint2_pos",
@@ -61,10 +59,11 @@ class ArmpiDataset(Dataset):
 
     def __getitem__(self, idx):
         metadata_row = self.master_index.iloc[idx]
-
+        
         # action data
-        action = metadata_row[self.action_columns].values.astype(np.float32)
-        action_tensor = torch.tensor(action, dtype=torch.float32)
+        action_values = metadata_row[self.action_columns].values.astype(np.int64) 
+        action_labels = action_values + 1 
+        action_tensor = torch.tensor(action_labels, dtype=torch.long)
 
         # state data
         state_values = metadata_row[self.state_columns].values.astype(np.float32)

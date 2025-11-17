@@ -8,6 +8,8 @@ class MlpNetwork(nn.Module):
         
         resnet = models.resnet18(weights=models.ResNet18_Weights.DEFAULT)
         self.cnn_backbone = nn.Sequential(*list(resnet.children())[:-1])
+        self.num_actions = action_output_dim
+        self.num_classes = 3
         
         self.state_mlp = nn.Sequential(
             nn.Linear(state_input_dim, mlp_hidden_dim),
@@ -27,7 +29,7 @@ class MlpNetwork(nn.Module):
             nn.Linear(256, 128),
             nn.ReLU(),
             nn.Dropout(p=0.5),
-            nn.Linear(128, action_output_dim)
+            nn.Linear(128, action_output_dim*self.num_classes)
         )
 
     def forward(self, image, state):
@@ -41,5 +43,8 @@ class MlpNetwork(nn.Module):
         combined_features = torch.cat((img_features, state_features), dim=1)
         
         output_action = self.fusion_head(combined_features)
+
+        output_action = output_action.view(output_action.size(0),self.num_actions,self.num_classes)
+        output_action = output_action.permute(0,2,1)
         
         return output_action

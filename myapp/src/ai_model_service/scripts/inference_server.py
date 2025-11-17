@@ -34,7 +34,7 @@ class InferenceServer:
         ]
 
         self.model = MlpNetwork(
-            state_input_dim=len(state_columns), action_output_dim=len(action_columns)
+            state_input_dim=len(self.state_columns), action_output_dim=len(self.action_columns)
         )
         try:
             self.model.load_state_dict(
@@ -102,7 +102,10 @@ class InferenceServer:
                 image_batch = image_tensor.unsqueeze(0).to(self.device)
                 state_batch = state_tensor.unsqueeze(0).to(self.device)
 
-                predicted_actions_tensor = self.model(image_batch, state_batch)
+                predicted_actions_logits = self.model(image_batch, state_batch)
+                predicted_indicies = torch.argmax(predicted_actions_logits, dim=1)
+                predicted_actions_tensor = predicted_indicies - 1
+
                 predicted_actions = predicted_actions_tensor.squeeze(0).cpu().numpy()
 
             res = PredictActionResponse()

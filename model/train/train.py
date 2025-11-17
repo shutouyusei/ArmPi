@@ -17,7 +17,7 @@ class Train:
         self.epochs = epochs
         self.patience = early_stop_patience
 
-        self.criterion = nn.MSELoss()
+        self.criterion = nn.CrossEntropyLoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=self.learning_rate)
 
         self.scaler = GradScaler(enabled= (self.device.type == 'cuda'))
