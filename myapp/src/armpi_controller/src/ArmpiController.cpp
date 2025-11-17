@@ -1,13 +1,19 @@
 #include <armpi_controller/ArmpiController.h>
 
-ArmpiController::ArmpiController(ros::NodeHandle &nh,
-                                 const std::string &node_name,
-                                 const std::string &task_name)
-    : nh_(nh), command_publisher_(nh), collect_data_(nh, task_name),
-      node_name_(node_name), running_(false) {
+ArmpiController::ArmpiController(ros::NodeHandle &nh, const std::string &node_name, const std::string &task_name) : nh_(nh), collect_data_(nh, task_name), node_name_(node_name), running_(false) {
+  pub_= nh_.advertise<armpi_operation_msgs::RobotCommand>("armpi_command", 1);
+  ROS_INFO_STREAM("ArmpiController for task " << task_name << " is started");
   reset();
 }
 
+
+ArmpiController::~ArmpiController() {
+  pub_.shutdown();
+  running_ = false;
+  if (input_thread_.joinable()) {
+    input_thread_.join();
+  }
+}
 void ArmpiController::reset() {
   // initialize armpi
   cmd_.chassis_move_forward = 0;
@@ -22,12 +28,6 @@ void ArmpiController::reset() {
   cmd_.gripper_close = 0;
 }
 
-ArmpiController::~ArmpiController() {
-  running_ = false;
-  if (input_thread_.joinable()) {
-    input_thread_.join();
-  }
-}
 
 void ArmpiController::start() {
   running_ = true;
@@ -38,7 +38,7 @@ void ArmpiController::controllerLoop() {
   while (running_ && ros::ok()) {
     reset();
     this->getCommand();
-    command_publisher_.sendCommand(cmd_);
+    pub_.publish(cmd_);
     ros::Duration(0.05).sleep();
   }
 }
