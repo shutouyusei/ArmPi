@@ -39,7 +39,6 @@ bool SDLHandler::is_pressed_1time(SDL_Scancode code){
 void SDLHandler::pollSDLEvents() {
   SDL_Event event;
   prev_key_states_ = key_states_;
-  ROS_INFO("pollSDLEvents");
   while (SDL_PollEvent(&event)) {
     switch (event.type) {
       case SDL_KEYDOWN:

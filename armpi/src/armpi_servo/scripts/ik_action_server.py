@@ -43,7 +43,7 @@ def handle_compute_ik_and_move(req):
             duration_sec, 
             (
                 (1, req.gripper), 
-                (2, servo_data['servo2']),
+                (2, req.rotation),
                 (3, servo_data['servo3']),
                 (4, servo_data['servo4']),
                 (5, servo_data['servo5']),
@@ -52,7 +52,6 @@ def handle_compute_ik_and_move(req):
         )
         
         response.success = True
-        response.servo2 = servo_data['servo2']
         response.servo3 = servo_data['servo3']
         response.servo4 = servo_data['servo4']
         response.servo5 = servo_data['servo5']

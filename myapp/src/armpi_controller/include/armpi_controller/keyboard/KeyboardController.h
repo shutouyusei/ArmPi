@@ -21,4 +21,5 @@ private:
   void updateArm();
 private:
   SDLHandler* sdl_handler_;
+  ros::Publisher pub_reset_servo_;   
 };

@@ -15,16 +15,14 @@ from rosbags.typesys import get_types_from_msg # スニペットから
 
 # コマンドメッセージのフィールド定義
 COMMAND_FIELDS = [
-    "chassis_move_forward"
-    "chassis_move_forward"
-    "chassis_move_right"
-    "angular_right"
-    "arm_x"
-    "arm_y"
-    "arm_z"
-    "arm_alpha"
-    "arm_alpha1"
-    "arm_alpha2"
+    "chassis_move_forward",
+    "chassis_move_right",
+    "angular_right",
+    "arm_x",
+    "arm_y",
+    "arm_z",
+    "arm_alpha",
+    "rotation",
     "gripper_close"
 ]
 
@@ -40,15 +38,14 @@ def get_ros_time(stamp):
 def extract_command_data(msg):
     """RobotCommandメッセージをフラットなリストに変換"""
     return [
-        msg.chassis_move_forward 
-        msg.chassis_move_right
-        msg.angular_right
-        msg.arm_x
-        msg.arm_y
-        msg.arm_z
-        msg.arm_alpha
-        msg.arm_alpha1
-        msg.arm_alpha2
+        msg.chassis_move_forward,
+        msg.chassis_move_right,
+        msg.angular_right,
+        msg.arm_x,
+        msg.arm_y,
+        msg.arm_z,
+        msg.arm_alpha,
+        msg.rotation,
         msg.gripper_close
     ]
 

@@ -21,8 +21,7 @@ class InferenceServer:
             "arm_y",
             "arm_z",
             "arm_alpha",
-            "arm_alpha1",
-            "arm_alpha2",
+            "rotation",
             "gripper_close",
         ]
         self.state_columns = [
@@ -89,9 +88,8 @@ class InferenceServer:
         cmd_msg.arm_y = predicted_actions[4]
         cmd_msg.arm_z = predicted_actions[5]
         cmd_msg.arm_alpha = predicted_actions[6]
-        cmd_msg.arm_alpha1 = predicted_actions[7]
-        cmd_msg.arm_alpha2 = predicted_actions[8]
-        cmd_msg.gripper_close = predicted_actions[9]
+        cmd_msg.rotation = predicted_actions[7]
+        cmd_msg.gripper_close = predicted_actions[8]
 
         return cmd_msg
 

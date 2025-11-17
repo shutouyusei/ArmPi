@@ -27,8 +27,7 @@ class ArmpiDataset(Dataset):
             "arm_y",
             "arm_z",
             "arm_alpha",
-            "arm_alpha1",
-            "arm_alpha2",
+            "rotation",
             "gripper_close",
         ]
         self.state_dim = 6

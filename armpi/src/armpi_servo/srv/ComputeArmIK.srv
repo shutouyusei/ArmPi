@@ -8,6 +8,7 @@ float64 z
 
 #graps
 float64 gripper
+float64 rotation 
 # ピッチ角の目標値と範囲 (度)
 float64 alpha
 float64 alpha1
@@ -21,7 +22,6 @@ float64 alpha2
 # IK計算の成否
 bool success
 # 計算されたサーボ3, 4, 5, 6のPWMパルス幅 (動作に成功した場合のみ有効)
-int32 servo2
 int32 servo3
 int32 servo4
 int32 servo5

@@ -5,17 +5,23 @@
 ArmpiServo::ArmpiServo(ros::NodeHandle &nh) : nh_(nh), ik_service_name_("compute_arm_ik_and_move") {
   reset();
   ik_client_ = nh_.serviceClient<armpi_servo::ComputeArmIK>(ik_service_name_);
-  // サービスが起動するまで待機
+  sub_ = nh_.subscribe("reset_servo", 1, &ArmpiServo::requestReset, this);
+
   waitForService();
 }
 
-ArmpiServo::~ArmpiServo() { ROS_INFO("ArmpiServo shutting down."); }
-
+ArmpiServo::~ArmpiServo() { 
+  sub_.shutdown();
+  ROS_INFO("ArmpiServo shutting down."); 
+}
 
 void ArmpiServo::reset(){
-  current_armpos = {0.0, 0.12, 0.15, -90.0, -180.0, 0.0, 200.0};
+  current_armpos = {0.0, 0.2, 0.1, -120.0, 500.0,200.0};
+}
+
+void ArmpiServo::requestReset(const std_msgs::Empty::ConstPtr &msg) {
+  reset();
 };
-// --- プライベートメソッド ---
 
 void ArmpiServo::waitForService() {
   ROS_INFO("Waiting for IK Action Service: %s...", ik_service_name_.c_str());
@@ -34,8 +40,9 @@ bool ArmpiServo::requestArmMove(const ArmCommand &command) {
   srv.request.y = armpos.y;
   srv.request.z = armpos.z;
   srv.request.alpha = armpos.alpha;
-  srv.request.alpha1 = armpos.alpha1;
-  srv.request.alpha2 = armpos.alpha2;
+  srv.request.alpha1 = armpos.alpha - 40;
+  srv.request.alpha2 = armpos.alpha + 40;
+  srv.request.rotation = armpos.rotation;
   srv.request.gripper = armpos.gripper;
 
   // サービスを呼び出し
@@ -84,6 +91,20 @@ ArmPos ArmpiServo::calArmPos(const ArmCommand &command) {
   }else{
     armpos.gripper = current_armpos.gripper;
   }
+
+  armpos.alpha = alpha(command.arm_alpha);
+  if (-140 <= current_armpos.alpha + armpos.alpha && current_armpos.alpha + armpos.alpha <=-40) {
+    armpos.alpha += current_armpos.alpha;
+  }else{
+    armpos.alpha = current_armpos.alpha;
+  }
+
+  armpos.rotation= rotation(command.rotation);
+  if (250 <= current_armpos.rotation+ armpos.rotation && current_armpos.rotation + armpos.rotation<= 750) {
+    armpos.rotation += current_armpos.rotation;
+  }else{
+    armpos.rotation = current_armpos.rotation;
+  }
   return armpos;
 }
 
@@ -93,4 +114,11 @@ float ArmpiServo::move(const int arm) {
 
 float ArmpiServo::grab(const int gripper_close) {
   return gripper_close * GRIPPER_STEP;
+}
+
+float  ArmpiServo::alpha(const int alpha){
+  return alpha * ALPHA_STEP;
+}
+float ArmpiServo::rotation(const int rotation){
+  return rotation * ROTATION_STEP;
 }

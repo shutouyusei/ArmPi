@@ -2,13 +2,12 @@
 #include <iostream>
 #include <string>
 #include <armpi_controller/keyboard/SDLHandler.h>
+#include <std_msgs/Empty.h>
 
-KeyboardController::KeyboardController(ros::NodeHandle &nh, const std::string &task_name)
-  : ArmpiController(nh, "KeyboardController", task_name){
-
+KeyboardController::KeyboardController(ros::NodeHandle &nh, const std::string &task_name) : ArmpiController(nh, "KeyboardController", task_name){
+  pub_reset_servo_ = nh_.advertise<std_msgs::Empty>("reset_servo", 1);
   sdl_handler_ = new SDLHandler();
   ROS_INFO("KeyboardController (SDL) initialized.");
-  ROS_INFO("Use 'w/s' for Linear X, 'a/d' for Angular Z, 'Space' for Stop.");
 }
 
 KeyboardController::~KeyboardController() {
@@ -27,16 +26,24 @@ void KeyboardController::keyControl() {
   if (sdl_handler_->is_pressed_1time(SDL_SCANCODE_Z)) {
     if (collect_data_.is_running_ == false) {
       collect_data_.start();
-    } else {
+    }
+  }
+  if (sdl_handler_->is_pressed_1time(SDL_SCANCODE_Y)) {
+    if (collect_data_.is_running_ == true) {
       collect_data_.finish(true);
     }
   }
-  // '1'
-  if (sdl_handler_->is_pressed_1time(SDL_SCANCODE_1)) {
-    reset();
+  if (sdl_handler_->is_pressed_1time(SDL_SCANCODE_N)) {
+    if (collect_data_.is_running_ == true) {
+      collect_data_.finish(false);
+    }
   }
 
-  // 'Ctrl+C'
+  // '1'
+  if (sdl_handler_->is_pressed_1time(SDL_SCANCODE_1)) {
+    pub_reset_servo_.publish(std_msgs::Empty());
+  }
+
   if (sdl_handler_->is_pressed_1time(SDL_SCANCODE_ESCAPE)){
     ros::shutdown();
   }
@@ -68,4 +75,10 @@ void KeyboardController::updateArm() {
 
   if (sdl_handler_->is_pressed(SDL_SCANCODE_R)) cmd_.gripper_close = 1;
   else if (sdl_handler_->is_pressed(SDL_SCANCODE_F)) cmd_.gripper_close = -1;
+
+  if (sdl_handler_->is_pressed(SDL_SCANCODE_UP)) cmd_.arm_alpha = 1;
+  else if (sdl_handler_->is_pressed(SDL_SCANCODE_DOWN)) cmd_.arm_alpha = -1;
+
+  if (sdl_handler_->is_pressed(SDL_SCANCODE_RIGHT)) cmd_.rotation = 1;
+  else if (sdl_handler_->is_pressed(SDL_SCANCODE_LEFT)) cmd_.rotation = -1;
 }

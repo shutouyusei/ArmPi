@@ -3,8 +3,7 @@
 
 ArmpiControl::ArmpiControl(ros::NodeHandle &nh)
     : nh_(nh), armpi_chassis_(nh), armpi_servo_(nh) {
-  sub_cmd_ =
-      nh_.subscribe("armpi_command", 1, &ArmpiControl::cmdCallback, this);
+  sub_cmd_ = nh_.subscribe("armpi_command", 1, &ArmpiControl::cmdCallback, this);
 
   pub_ = nh_.advertise<armpi_operation_msgs::RobotCommand>("get_command", 1);
 
@@ -18,14 +17,13 @@ void ArmpiControl::cmdCallback(const armpi_operation_msgs::RobotCommand::ConstPt
   pub_.publish(new_msg);
 
   // chassis
-  const ChassisCommand chassis_cmd = {msg->chassis_move_forward, msg->chassis_move_right,
-                                      msg->angular_right};
+  const ChassisCommand chassis_cmd = {msg->chassis_move_forward, msg->chassis_move_right, msg->angular_right};
   armpi_chassis_.publishChassisCommand(chassis_cmd);
 
   // servo
   const ArmCommand arm_command = {
       msg->arm_x,      msg->arm_y,      msg->arm_z,        msg->arm_alpha,
-      msg->arm_alpha1, msg->arm_alpha2, msg->gripper_close};
+      msg->rotation , msg->gripper_close};
   armpi_servo_.requestArmMove(arm_command);
 }
 

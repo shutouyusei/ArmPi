@@ -10,7 +10,7 @@ int8 arm_y
 int8 arm_z
 
 int8 arm_alpha
-int8 arm_alpha1
-int8 arm_alpha2
+
+int8 rotation
 
 int8 gripper_close

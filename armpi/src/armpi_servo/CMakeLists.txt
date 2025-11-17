@@ -30,7 +30,7 @@ catkin_install_python(PROGRAMS
 catkin_package(
   INCLUDE_DIRS include
   LIBRARIES armpi_servo_lib
-  CATKIN_DEPENDS roscpp rospy std_msgs hiwonder_servo_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs hiwonder_servo_msgs message_runtime
 )
 
 include_directories(
@@ -41,7 +41,7 @@ include_directories(
 add_library(armpi_servo_lib
   src/ArmpiServo.cpp
 )
-
+add_dependencies(armpi_servo_lib ${${PROJECT_NAME}_EXPORTED_TARGETS})
 # ライブラリのリンク
 target_link_libraries(armpi_servo_lib
   ${catkin_LIBRARIES}
