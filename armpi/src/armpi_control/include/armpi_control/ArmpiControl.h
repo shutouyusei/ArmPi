@@ -2,6 +2,7 @@
 #include <armpi_chassis/ArmpiChassis.h>
 #include <armpi_servo/ArmpiServo.h>
 #include <ros/ros.h>
+#include <armpi_operation_msgs/RobotCommand.h>
 
 class ArmpiControl {
 public:

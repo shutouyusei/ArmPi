@@ -2,9 +2,8 @@
 
 // --- コンストラクタとデストラクタ ---
 
-ArmpiServo::ArmpiServo(ros::NodeHandle &nh)
-    : nh_(nh), ik_service_name_("compute_arm_ik_and_move") {
-  // サービス接続クライアントの初期化
+ArmpiServo::ArmpiServo(ros::NodeHandle &nh) : nh_(nh), ik_service_name_("compute_arm_ik_and_move") {
+  reset();
   ik_client_ = nh_.serviceClient<armpi_servo::ComputeArmIK>(ik_service_name_);
   // サービスが起動するまで待機
   waitForService();
@@ -12,6 +11,10 @@ ArmpiServo::ArmpiServo(ros::NodeHandle &nh)
 
 ArmpiServo::~ArmpiServo() { ROS_INFO("ArmpiServo shutting down."); }
 
+
+void ArmpiServo::reset(){
+  current_armpos = {0.0, 0.12, 0.15, -90.0, -180.0, 0.0, 200.0};
+};
 // --- プライベートメソッド ---
 
 void ArmpiServo::waitForService() {
@@ -23,7 +26,7 @@ void ArmpiServo::waitForService() {
 
 bool ArmpiServo::requestArmMove(const ArmCommand &command) {
 
-  Armpos armpos = calArmPos(command);
+  ArmPos armpos = calArmPos(command);
   armpi_servo::ComputeArmIK srv;
 
   // サービスの入力 (Request) を設定
@@ -38,6 +41,7 @@ bool ArmpiServo::requestArmMove(const ArmCommand &command) {
   // サービスを呼び出し
   if (ik_client_.call(srv)) {
     if (srv.response.success) {
+      current_armpos = armpos;
       return true;
     } else {
       ROS_WARN("Move failed: IK found no solution.");
@@ -47,6 +51,7 @@ bool ArmpiServo::requestArmMove(const ArmCommand &command) {
     ROS_ERROR("Failed to call IK service. Check network/service server.");
     return false;
   }
+  return false;
 }
 
 ArmPos ArmpiServo::calArmPos(const ArmCommand &command) {
@@ -54,44 +59,38 @@ ArmPos ArmpiServo::calArmPos(const ArmCommand &command) {
   armpos.x = move(command.arm_x);
   armpos.y = move(command.arm_y);
   armpos.z = move(command.arm_z);
-  if (-0.3 <= current_armpos.x + armpos.x &&
-      current_armpos.x + armpos.x <= 0.3) {
-    current_armpos.x += armpos.x;
+
+  if (-0.3 <= current_armpos.x + armpos.x && current_armpos.x + armpos.x <= 0.3) {
+    armpos.x += current_armpos.x;
+  }else{
+    armpos.x = current_armpos.x;
   }
-  if (-0.1 <= current_armpos.y + armpos.y &&
-      current_armpos.y + armpos.y <= 0.3) {
-    current_armpos.y += armpos.y;
+
+  if (-0.1 <= current_armpos.y + armpos.y && current_armpos.y + armpos.y <= 0.3) {
+    armpos.y += current_armpos.y;
+  }else{
+    armpos.y = current_armpos.y;
   }
-  if (-0.1 <= current_armpos.z + armpos.z &&
-      current_armpos.z + armpos.z <= 0.3) {
-    current_armpos.z += armpos.z;
+
+  if (-0.1 <= current_armpos.z + armpos.z && current_armpos.z + armpos.z <= 0.3) {
+    armpos.z += current_armpos.z;
+  }else{
+    armpos.z = current_armpos.z;
   }
+
   armpos.gripper = grab(command.gripper_close);
-  if (0 <= current_armpos.gripper + armpos.gripper &&
-      current_armpos.gripper + armpos.gripper <= 600) {
-    current_armpos.gripper += armpos.gripper;
+  if (0 <= current_armpos.gripper + armpos.gripper && current_armpos.gripper + armpos.gripper <= 600) {
+    armpos.gripper += current_armpos.gripper;
+  }else{
+    armpos.gripper = current_armpos.gripper;
   }
   return armpos;
 }
 
 float ArmpiServo::move(const int arm) {
-  switch (arm) {
-  case 1:
-    return IK_STEP;
-  case -1:
-    return -IK_STEP;
-  default:
-    return 0;
-  }
+  return arm * IK_STEP;
 }
 
 float ArmpiServo::grab(const int gripper_close) {
-  switch (gripper_close) {
-  case 1:
-    return GRIPPER_STEP;
-  case -1:
-    return GRIPPER_STEP;
-  default:
-    return 0;
-  }
+  return gripper_close * GRIPPER_STEP;
 }

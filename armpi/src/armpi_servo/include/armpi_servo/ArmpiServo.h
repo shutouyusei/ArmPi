@@ -29,6 +29,7 @@ public:
   ~ArmpiServo();
 
   bool requestArmMove(const ArmCommand &command);
+  void reset();
 
 private:
   ArmPos calArmPos(const ArmCommand &command);
@@ -41,8 +42,6 @@ private:
   const std::string ik_service_name_;
 
   ArmPos current_armpos;
-
-  const ArmPos;
   // armpi controller constantsk
   const float IK_STEP = 0.005;
   const float GRIPPER_STEP = 10;

@@ -7,6 +7,7 @@ find_package(catkin REQUIRED COMPONENTS
   collect_data
   ai_model_service
 )
+find_package(SDL2 REQUIRED)
 
 catkin_package(
   CATKIN_DEPENDS roscpp armpi_operation_msgs collect_data ai_model_service
@@ -21,14 +22,16 @@ include_directories(
 add_executable(armpi_controller
   src/ArmpiControllerMain.cpp
   src/ArmpiController.cpp
-  src/KeyboardController.cpp
-  src/AIController.cpp
+  src/keyboard/KeyboardController.cpp
+  src/ai/AIController.cpp
+  src/keyboard/SDLHandler.cpp
 )
 
 target_link_libraries(armpi_controller
   ${collect_data_LIBRARIES}
   ${catkin_LIBRARIES}
   ${CMAKE_THREAD_LIBS_INIT}
+  ${SDL2_LIBRARIES}
   rt
 )
 

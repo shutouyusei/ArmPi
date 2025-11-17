@@ -26,4 +26,5 @@ private:
 
   const float MAX_SPEED = 100.0;
   const float MAX_TURN = 0.5;
+  const ChassisCommand STOP = {0, 0, 0};
 };

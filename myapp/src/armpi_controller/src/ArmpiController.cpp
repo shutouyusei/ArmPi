@@ -6,7 +6,6 @@ ArmpiController::ArmpiController(ros::NodeHandle &nh, const std::string &node_na
   reset();
 }
 
-
 ArmpiController::~ArmpiController() {
   pub_.shutdown();
   running_ = false;
@@ -14,6 +13,7 @@ ArmpiController::~ArmpiController() {
     input_thread_.join();
   }
 }
+
 void ArmpiController::reset() {
   // initialize armpi
   cmd_.chassis_move_forward = 0;

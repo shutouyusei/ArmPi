@@ -11,16 +11,15 @@ ArmpiControl::ArmpiControl(ros::NodeHandle &nh)
   ROS_INFO("ArmpiCommandSubscriber init");
 }
 
-void ArmpiControl::cmdCallback(
-    const armpi_operation_msgs::RobotCommand::ConstPtr &msg) {
+void ArmpiControl::cmdCallback(const armpi_operation_msgs::RobotCommand::ConstPtr &msg) {
   armpi_operation_msgs::RobotCommand new_msg = *msg;
   new_msg.header.stamp = ros::Time::now();
   new_msg.header.frame_id = "base_link";
   pub_.publish(new_msg);
 
   // chassis
-  const ChassisCommand chassis_cmd = {msg->move_forward, msg->move_right,
-                                      msg->angular};
+  const ChassisCommand chassis_cmd = {msg->chassis_move_forward, msg->chassis_move_right,
+                                      msg->angular_right};
   armpi_chassis_.publishChassisCommand(chassis_cmd);
 
   // servo

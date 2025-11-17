@@ -1,4 +1,4 @@
-#include <armpi_controller/AIController.h>
+#include <armpi_controller/ai/AIController.h>
 
 AIController::AIController(ros::NodeHandle &nh, const std::string &model_name)
     : ArmpiController(nh, "armpi_controller", model_name), it_(nh) {
