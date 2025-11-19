@@ -7,7 +7,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset
 import torchvision.transforms as T
-from .read_hdf import ReadHDF
+from read_hdf import ReadHDF
 
 
 class ArmpiDataset(Dataset):
@@ -71,7 +71,6 @@ class ArmpiDataset(Dataset):
         action_tensor = torch.tensor(action_labels, dtype=torch.long)
 
         # state data
-        # TODO:使用するデータを調整する
         state_values = metadata_row[self.state_columns].values.astype(np.float32)
         state_tensor = torch.tensor(state_values, dtype=torch.float32)
 
@@ -97,6 +96,6 @@ class ArmpiDataset(Dataset):
 
 if __name__ == "__main__":
     print("TEST")
-    armpi_dataset = ArmpiDataset(
-        ["bringup_red", "bringup_red1", "bringup_red2", "bringup_red3", "bringup_red4"]
-    )
+    armpi_dataset = ArmpiDataset( ["bring_up_red"])
+    for i in range(len(armpi_dataset)):
+        image_tensor, state_tensor, action_tensor = armpi_dataset[i]
