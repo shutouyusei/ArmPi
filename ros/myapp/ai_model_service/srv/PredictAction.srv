@@ -1,0 +1,9 @@
+# input for CNN 
+sensor_msgs/Image current_image
+
+# input for MLP
+sensor_msgs/JointState current_joint_state
+
+---
+
+armpi_operation_msgs/RobotCommand predicted_command

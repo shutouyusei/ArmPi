@@ -24,8 +24,15 @@ RUN apt-get update && apt-get install -y \
     build-essential \
     ros-noetic-image-transport\
     ros-noetic-cv-bridge\
+    libsdl2-dev \
     && rm -rf /var/lib/apt/lists/*
 
+RUN pip3 install --upgrade pip
+
+RUN pip3 install \
+    torch==2.1.0 \
+    torchvision==0.16.0 \
+    opencv-python
 
 # ユーザーを切り替えて作業
 USER rosuser
