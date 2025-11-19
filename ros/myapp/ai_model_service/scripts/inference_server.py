@@ -33,13 +33,8 @@ class InferenceServer:
             "r_joint_pos",
         ]
 
-        self.model = MlpNetwork(
-            state_input_dim=len(self.state_columns), action_output_dim=len(self.action_columns)
-        )
         try:
-            self.model.load_state_dict(
-                torch.load(model_path, map_location=self.device, weights_only=True)
-            )
+            self.model = torch.load(model_path, map_location=self.device)
             self.model.to(self.device)
             self.model.eval()
         except FileNotFoundError:
@@ -120,25 +115,10 @@ class InferenceServer:
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--model_name', type=str,required=True, help='name of AI model')
+    args = parser.parse_args()
     rospy.init_node("imitation_service_server")
-    import rospkg
-    import os
-
-    try:
-        rospack = rospkg.RosPack()
-        pkg_path = rospack.get_path("ai_model_service")
-    except rospkg.common.ResourceNotFound:
-        rospy.logfatal("Package 'ai_model_service' not found.")
-        rospy.signal_shutdown("Package not found")
-        exit()
-
-    MODEL_FILE = os.path.join(pkg_path, "model", "model.pt")
-
-    rospy.loginfo(f"Loading model from: {MODEL_FILE}")
-
-    if not os.path.exists(MODEL_FILE):
-        rospy.logfatal(f"CRITICAL: Model file not found at {MODEL_FILE}")
-        rospy.signal_shutdown("Model file not found")
-        exit()
-    server = InferenceServer(MODEL_FILE)
+    server = InferenceServer(f"home/rosuser/ros_ws/models/{args.model_path}")
     rospy.spin()
