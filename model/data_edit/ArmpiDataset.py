@@ -15,7 +15,6 @@ class ArmpiDataset(Dataset):
         all_sync_data = self.__read_file(data_directory_list)
         print(f"{len(all_sync_data)} files are read")
 
-        self.master_index = pd.concat(all_sync_data, ignore_index=True)
 
         self.image_dataset_key = "images/data"
         self.action_columns = [
@@ -46,6 +45,12 @@ class ArmpiDataset(Dataset):
                 T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
             ]
         )
+        self.master_index = pd.concat(all_sync_data, ignore_index=True)
+        original_count = len(self.master_index)
+        action_sum = self.master_index[self.action_columns].abs().sum(axis=1)
+
+        self.master_index = self.master_index[action_sum > 0]
+        print(f"{original_count - len(self.master_index)} data are removed")
 
     def __read_file(self, folder_name_list):
         read_hdf = ReadHDF()
@@ -66,6 +71,7 @@ class ArmpiDataset(Dataset):
         action_tensor = torch.tensor(action_labels, dtype=torch.long)
 
         # state data
+        # TODO:使用するデータを調整する
         state_values = metadata_row[self.state_columns].values.astype(np.float32)
         state_tensor = torch.tensor(state_values, dtype=torch.float32)
 

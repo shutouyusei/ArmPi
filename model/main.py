@@ -8,7 +8,7 @@ VAL_SPLIT = 0.2
 BATCH_SIZE = 32
 
 if __name__ == '__main__':
-    read_data_list = ["bring_up_test"]
+    read_data_list = ["bring_up_red"]
     full_dataset = ArmpiDataset(read_data_list)
 
     val_size = int(len(full_dataset) * VAL_SPLIT)
