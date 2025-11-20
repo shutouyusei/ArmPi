@@ -1,3 +1,0 @@
-[submodule "ros/myapp/ai_model_service/src/ai_modules"]
-	path = ros/myapp/ai_model_service/src/ai_modules
-	url = git@github.com:shutouyusei/IL.git
