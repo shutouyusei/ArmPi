@@ -1,3 +1,3 @@
-[submodule "third_party/act"]
-	path = third_party/act
-	url = git@github.com:shutouyusei/act.git
+[submodule "ros/myapp/ai_model_service/src/IL"]
+	path = ros/myapp/ai_model_service/src/ai_modules
+	url = git@github.com:shutouyusei/IL.git
