@@ -8,22 +8,14 @@ from ai_model_service.srv import PredictAction, PredictActionResponse
 from armpi_operation_msgs.msg import RobotCommand
 
 # model
-from ai_model_service.mlp_model import MlpModel
-from ai_model_service.act_model import ActModel
+from ai_modules.model_load import model_load 
 
 class InferenceServer:
     def __init__(self, model_path):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         rospy.loginfo(f"Using device: {self.device}")
 
-        loaded_data = torch.load(f"{model_path}.pt"")
-        # --- モデルの切り替えロジック ---
-        if loaded_data["model_type"] == "mlp":
-            self.model_strategy = MlpModel(loaded_data["model"], self.device)
-        elif loaded_data["model_type"]== "act":
-            self.model_strategy = ActModel(loaded_data["model"], self.device)
-        else:
-            raise ValueError(f"Unknown model type: {model_type}")
+        self.model_strategy = model_load(model_path, self.device)
         # -----------------------------
 
         self.bridge = CvBridge()
@@ -87,7 +79,7 @@ class InferenceServer:
         ]
         for i, key in enumerate(keys):
             if i < len(action_values):
-                setattr(cmd_msg, key, float(action_values[i]))
+                setattr(cmd_msg, key, int(action_values[i]))
         return cmd_msg
 
     def handle_predict_request(self, req):
@@ -96,6 +88,7 @@ class InferenceServer:
             state_tensor = self.preprocess_state(req.current_joint_state)
 
             predicted_actions = self.model_strategy.predict(image_tensor, state_tensor)
+            rospy.loginfo(f"Predicted actions: {predicted_actions}")
 
             res = PredictActionResponse()
             res.predicted_command = self.actions_to_ros_msg(predicted_actions)

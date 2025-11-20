@@ -1,5 +1,5 @@
 <launch>
-    <arg name="model_name" default="act.pt" doc="使用するモデルファイル名" />
+    <arg name="model_name" doc="使用するモデルファイル名" />
 
     <node name="imitation_service_server"
           pkg="ai_model_service"
