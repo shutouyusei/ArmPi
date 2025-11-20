@@ -1,17 +1,16 @@
 <launch>
-
-    <arg name="task" default="default_task" doc="データ収集やAIのタスク名 (C++ノードの引数)" />
+    <arg name="model_name" default="act.pt" doc="使用するモデルファイル名" />
 
     <node name="imitation_service_server"
           pkg="ai_model_service"
           type="inference_server.py"
           output="screen"
-          respawn="true" />
+          respawn="true"
+          args="--model_name $(arg model_name)" />
 
     <node name="generic_robot_controller"
           pkg="armpi_controller"
           type="armpi_controller" 
-          args="$(arg task)" 
           output="screen"
           required="true"> 
           <param name="controller_type" value="ai" />

@@ -24,7 +24,8 @@ generate_messages(
 
 
 catkin_package(
-  CATKIN_DEPENDS rospy cv_bridge sensor_msgs armpi_operation_msgs message_runtime
+  CATKIN_DEPENDS rospy cv_bridge sensor_msgs armpi_operation_msgs
+  message_runtime
 )
 
 catkin_install_python(
