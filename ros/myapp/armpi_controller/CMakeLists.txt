@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.0.2)
 project(armpi_controller)
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(catkin REQUIRED COMPONENTS
   roscpp
@@ -24,6 +26,7 @@ add_executable(armpi_controller
   src/ArmpiController.cpp
   src/keyboard/KeyboardController.cpp
   src/ai/AIController.cpp
+  src/ai/UserInput.cpp
   src/sdl/SDLHandler.cpp
 )
 
@@ -33,5 +36,6 @@ target_link_libraries(armpi_controller
   ${CMAKE_THREAD_LIBS_INIT}
   ${SDL2_LIBRARIES}
   rt
+  stdc++fs
 )
 

@@ -1,5 +1,5 @@
 #include <armpi_controller/ai/AIController.h>
-#include <armpi_controller/sdl/SDLHandler.h>
+#include <armpi_controller/ai/UserInput.h>
 
 AIController::AIController(ros::NodeHandle &nh, const std::string &model_name) : ArmpiController(nh, "armpi_controller", model_name), it_(nh) {
   ROS_INFO("AIController Initialized.");
@@ -9,11 +9,11 @@ AIController::AIController(ros::NodeHandle &nh, const std::string &model_name) :
 
   sub_image_ = it_.subscribe("/usb_cam/image_raw", 1, &AIController::imageCallback, this);
   sub_joint_state_ = nh_.subscribe("/joint_states", 1, &AIController::jointStateCallback, this);
-  sdl_handler_ = new SDLHandler();
+  user_input_ = new UserInput(this);
 }
 
 AIController::~AIController() {
-  delete sdl_handler_;
+  delete user_input_;
 }
 
 void AIController::finish(){
@@ -23,9 +23,8 @@ void AIController::finish(){
 }
 
 void AIController::getCommand() {
-  sdl_handler_->pollSDLEvents();
-  keyCheck();
-  if (!is_running_){
+  user_input_->keyInput();
+  if (!(user_input_->is_running_)){
     return;
   }
   if (!received_image_ || !received_joint_state_) {
@@ -62,16 +61,6 @@ void AIController::getCommand() {
   } else {
     ROS_ERROR( "[AIController] サービス 'predict_action' の呼び出しに失敗しました。");
     cmd_ = armpi_operation_msgs::RobotCommand();
-  }
-}
-
-void AIController::keyCheck() {
-  if (sdl_handler_->is_pressed_1time(SDL_SCANCODE_1)) {
-    resetServo();
-  }
-  if (sdl_handler_->is_pressed_1time(SDL_SCANCODE_SPACE)) {
-    is_running_ = !is_running_;
-    ROS_INFO_STREAM(is_running_ ? "Start AI Controller" : "Stop AI Controller");
   }
 }
 
