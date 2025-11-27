@@ -12,7 +12,8 @@ RUN useradd -m rosuser && \
 
 # ROSの環境を読み込む
 RUN echo "source /opt/ros/noetic/setup.bash" >> /home/rosuser/.bashrc && \
-  echo "sudo chown -R rosuser:rosuser $ROS_WS" >> /home/rosuser/.bashrc
+  echo "sudo chown -R rosuser:rosuser $ROS_WS" >> /home/rosuser/.bashrc && \
+  echo "pip install ./src/myapp/ai_model_service/src/ai_modules/third_party/diffusion" >> /home/rosuser/.bashrc
 
 # 依存パッケージと catkin_tools のインストール
 USER root
@@ -29,12 +30,19 @@ RUN apt-get update && apt-get install -y \
 
 RUN pip3 install --upgrade pip
 
+
 RUN pip3 install \
     torch==2.1.0 \
     torchvision==0.16.0 \
-    opencv-python
+    opencv-python \
+    ipython\
+    packaging\
+    robomimic==0.2.0\
+    diffusers \
+    einops \
+    zarr \
+    omegaconf
 
 # ユーザーを切り替えて作業
 USER rosuser
 WORKDIR $ROS_WS
-

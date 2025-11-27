@@ -6,8 +6,9 @@
 #include <image_transport/image_transport.h>
 #include "ai_model_service/PredictAction.h"
 #include <mutex>
+#include <vector>
 
-class SDLHandler;
+class UserInput;
 
 class AIController : public ArmpiController {
 public:
@@ -39,7 +40,5 @@ private:
 
   bool received_image_ = false;
   bool received_joint_state_ = false;
-  bool is_running_ = false;
-
-  SDLHandler* sdl_handler_;
+  UserInput* user_input_;
 };

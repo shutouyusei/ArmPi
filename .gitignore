@@ -1,2 +1,5 @@
 datasets
 models
+build
+results
+*.egg-info
