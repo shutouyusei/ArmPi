@@ -20,7 +20,8 @@ public:
 
 private:
   void saveToRosbag(const std::string& bag_filename, const std::vector<sensor_msgs::ImageConstPtr>& images, const std::vector<sensor_msgs::JointState::Ptr>& joint_data, const std::vector<armpi_operation_msgs::RobotCommand::Ptr>& cmd_data);
-  std::string generateBagFilename();
+  void saveCollectedData();
+  static std::string generateBagFilename(const std::string task_name);
 private:
   ros::NodeHandle nh_;
   ros::Subscriber sub_;

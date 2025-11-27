@@ -3,10 +3,9 @@
 #include <ros/callback_queue.h>
 #include <boost/bind.hpp>
 
-ArmpiController::ArmpiController(ros::NodeHandle &nh, const std::string &node_name, const std::string &task_name) : nh_(nh), collect_data_(nh, task_name), node_name_(node_name){
+ArmpiController::ArmpiController(ros::NodeHandle &nh, const std::string &node_name) : nh_(nh),  node_name_(node_name){
   pub_= nh_.advertise<armpi_operation_msgs::RobotCommand>("armpi_command", 1);
   pub_reset_servo_ = nh_.advertise<std_msgs::Empty>("reset_servo", 1);
-  ROS_INFO_STREAM("ArmpiController for task " << task_name << " is started");
 }
 
 ArmpiController::~ArmpiController() {

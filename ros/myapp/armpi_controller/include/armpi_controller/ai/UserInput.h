@@ -12,7 +12,7 @@ public:
   void keyInput();
   void saveCSV();
 private:
-  std::string generateCSVFileName();
+  static std::string generateCSVFileName();
 public:
   bool is_running_ = false;
 private:

@@ -1,7 +1,7 @@
 #include <armpi_controller/ai/AIController.h>
 #include <armpi_controller/ai/UserInput.h>
 
-AIController::AIController(ros::NodeHandle &nh, const std::string &model_name) : ArmpiController(nh, "armpi_controller", model_name), it_(nh) {
+AIController::AIController(ros::NodeHandle &nh, const std::string &model_name) : ArmpiController(nh, "armpi_controller"), it_(nh),model_name_(model_name) {
   ROS_INFO("AIController Initialized.");
   client_predict_ = nh.serviceClient<ai_model_service::PredictAction>("predict_action");
 

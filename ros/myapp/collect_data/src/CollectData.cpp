@@ -14,32 +14,18 @@ CollectData::~CollectData() {
 
 void CollectData::start() {
   ROS_INFO("Collecting data...");
-  is_running_ = true;
   armpi_camera_.start();
   collect_joint_.start();
   collect_command_.start();
+
+  is_running_ = true;
 }
 
 void CollectData::finish(bool save){
   ROS_INFO("Finished collecting data.");
-  is_running_ = false;
   //---save ----
   if (save) {
-    //get data
-    std::vector<sensor_msgs::ImageConstPtr> images;
-    std::vector<sensor_msgs::JointState::Ptr> joint_data;
-    std::vector<armpi_operation_msgs::RobotCommand::Ptr> cmd_data;
-    armpi_camera_.getCollectedImages(images);
-    collect_joint_.getCollectedData(joint_data);
-    collect_command_.getCollectedData(cmd_data);
-
-    // save to rosbag
-    if (images.empty() && joint_data.empty() && cmd_data.empty()) {
-      ROS_WARN("No data collected. Skipping save");
-    }else{
-      std::string bag_path = generateBagFilename();
-      saveToRosbag(bag_path, images, joint_data, cmd_data);
-    }
+    saveCollectedData();
   }else{
     ROS_INFO("Not saving data.");
   }
@@ -48,14 +34,34 @@ void CollectData::finish(bool save){
   armpi_camera_.finish();
   collect_joint_.finish();
   collect_command_.finish();
+
+  is_running_ = false;
 }
 
-std::string CollectData::generateBagFilename(){
+void CollectData::saveCollectedData(){
+  //get data
+  std::vector<sensor_msgs::ImageConstPtr> images;
+  std::vector<sensor_msgs::JointState::Ptr> joint_data;
+  std::vector<armpi_operation_msgs::RobotCommand::Ptr> cmd_data;
+  armpi_camera_.getCollectedImages(images);
+  collect_joint_.getCollectedData(joint_data);
+  collect_command_.getCollectedData(cmd_data);
+
+  // save to rosbag
+  if (images.empty() && joint_data.empty() && cmd_data.empty()) {
+    ROS_WARN("No data collected. Skipping save");
+  }else{
+    std::string bag_path = generateBagFilename(task_name_);
+    saveToRosbag(bag_path, images, joint_data, cmd_data);
+  }
+}
+
+std::string CollectData::generateBagFilename(const std::string task_name){
     std::time_t t = std::time(nullptr);
     std::tm tm = *std::localtime(&t);
     std::stringstream ss;
 
-    ss << "/home/rosuser/ros_ws/datasets/" + task_name_ + "/data_" 
+    ss << "/home/rosuser/ros_ws/datasets/" + task_name + "/data_" 
        << std::put_time(&tm, "%Y%m%d_%H%M%S")
        << ".bag";
     std::string full_path_str = ss.str();

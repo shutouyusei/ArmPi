@@ -41,4 +41,5 @@ private:
   bool received_image_ = false;
   bool received_joint_state_ = false;
   UserInput* user_input_;
+  std::string model_name_;
 };
