@@ -28,9 +28,8 @@ class InferenceServer:
         """画像の前処理定義"""
         self.image_transform = T.Compose([
             T.ToPILImage(),
-            T.Resize((224, 224)),
+            T.Resize((64, 64)),
             T.ToTensor(),
-            T.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]),
         ])
         self.state_columns = [
             "joint1_pos", "joint2_pos", "joint3_pos", 
@@ -106,7 +105,7 @@ if __name__ == "__main__":
     argv = rospy.myargv(argv=sys.argv)
     
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model_name', type=str, required=True, help='ファイル名 (例: model.pt)')
+    parser.add_argument('--model_name', type=str, required=True, help='{mode_name}/model.pth and {model_name}/config.pth ')
     args = parser.parse_args(argv[1:])
 
     rospy.init_node("imitation_service_server")

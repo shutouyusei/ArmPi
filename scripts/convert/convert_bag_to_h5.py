@@ -27,7 +27,7 @@ COMMAND_FIELDS = [
 ]
 
 
-custom_msg_file = '~/LIS5/ArmPi/ros/share/src/armpi_operation_msgs/msg/RobotCommand.msg'
+custom_msg_file = '~/LIS5/ArmPi/ros/share/armpi_operation_msgs/msg/RobotCommand.msg'
 
 # --- 関数定義 1: BAG -> H5 変換ヘルパー ---
 

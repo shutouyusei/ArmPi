@@ -13,7 +13,9 @@ RUN useradd -m rosuser && \
 # ROSの環境を読み込む
 RUN echo "source /opt/ros/noetic/setup.bash" >> /home/rosuser/.bashrc && \
   echo "sudo chown -R rosuser:rosuser $ROS_WS" >> /home/rosuser/.bashrc && \
-  echo "pip install ./src/myapp/ai_model_service/src/ai_modules/third_party/diffusion" >> /home/rosuser/.bashrc
+  echo "pip install ./src/myapp/ai_model_service/src/ai_modules/third_party/diffusion" >> /home/rosuser/.bashrc && \
+  echo "pip install ./src/myapp/ai_model_service/src/ai_modules/third_party/LPIL/" >> /home/rosuser/.bashrc
+
 
 # 依存パッケージと catkin_tools のインストール
 USER root
