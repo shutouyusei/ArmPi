@@ -11,11 +11,11 @@ from armpi_operation_msgs.msg import RobotCommand
 from ai_modules.model_load import model_load 
 
 class InferenceServer:
-    def __init__(self, model_path):
+    def __init__(self, model_path,task_path=None):
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         rospy.loginfo(f"Using device: {self.device}")
 
-        self.model_strategy = model_load(model_path, self.device)
+        self.model_strategy = model_load(model_path, self.device,task_path)
         # -----------------------------
 
         self.bridge = CvBridge()
@@ -106,13 +106,16 @@ if __name__ == "__main__":
     
     parser = argparse.ArgumentParser()
     parser.add_argument('--model_name', type=str, required=True, help='{mode_name}/model.pth and {model_name}/config.pth ')
+    parser.add_argument('--task_name', type=str, help='{task_name}/goal_latent.pth')
     args = parser.parse_args(argv[1:])
 
     rospy.init_node("imitation_service_server")
     
     home_dir = os.path.expanduser("~") 
     model_path = os.path.join(home_dir, "ros_ws/models", args.model_name)
+    task_path = os.path.join(home_dir, "ros_ws/models", args.task_name)
     rospy.loginfo(f"Using model: {model_path}")
+    rospy.loginfo(f"Using task: {task_path}")
     
-    server = InferenceServer(model_path)
+    server = InferenceServer(model_path,task_path)
     rospy.spin()

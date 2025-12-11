@@ -1,12 +1,13 @@
 <launch>
     <arg name="model_name" doc="使用するモデルファイル名" />
+    <arg name="task_name" doc="task name" />
 
     <node name="imitation_service_server"
           pkg="ai_model_service"
           type="inference_server.py"
           output="screen"
           respawn="true"
-          args="--model_name $(arg model_name)" />
+          args="--model_name $(arg model_name) --task_name $(arg task_name)"/>
 
     <node name="generic_robot_controller"
           pkg="armpi_controller"
