@@ -123,7 +123,81 @@ This launches the inference server and controller in AI mode.
 
 ## Architecture
 
-> Architecture diagram will be added in a future update.
+### ROS Node Communication
+
+```mermaid
+graph LR
+  subgraph Sensor
+    CAM[/usb_cam/]
+    JS[/joint_states/]
+  end
+
+  subgraph Controller ["armpi_controller (generic_robot_controller)"]
+    KB[Keyboard Mode]
+    AI[AI Mode]
+  end
+
+  subgraph Inference ["ai_model_service (imitation_service_server)"]
+    MODEL[CNN+MLP / Diffusion Policy]
+  end
+
+  subgraph Hardware Control
+    CTRL["armpi_control (armpi_control_main)"]
+    IK["armpi_servo (ik_action_server)"]
+    CHASSIS[armpi_chassis]
+  end
+
+  subgraph Data Collection ["collect_data"]
+    COLLECT[CollectData Node]
+    BAG[(ROS Bag)]
+  end
+
+  CAM -- "/usb_cam/image_raw" --> AI
+  JS -- "/joint_states" --> AI
+  AI -- "predict_action srv" --> MODEL
+  MODEL -- "RobotCommand" --> AI
+
+  KB -- "armpi_command" --> CTRL
+  AI -- "armpi_command" --> CTRL
+
+  CTRL -- "compute_arm_ik_and_move srv" --> IK
+  CTRL -- "set_velocity" --> CHASSIS
+  IK -- "multi_id_pos_dur" --> SERVO[Servos]
+
+  CAM -- "/usb_cam/image_raw" --> COLLECT
+  JS -- "/joint_states" --> COLLECT
+  CTRL -- "get_command" --> COLLECT
+  COLLECT --> BAG
+```
+
+### Data Pipeline
+
+```mermaid
+flowchart LR
+  subgraph Collect ["1. Collect"]
+    HUMAN[Human Operator] --> |Keyboard Control| CONTROLLER[armpi_controller]
+    CAMERA[Camera] --> RECORD[collect_data]
+    JOINTS[Joint States] --> RECORD
+    CONTROLLER --> |get_command| RECORD
+    RECORD --> ROSBAG[(ROS Bag)]
+  end
+
+  subgraph Convert ["2. Convert"]
+    ROSBAG --> SCRIPT["convert_bag_to_h5.py"]
+    SCRIPT --> HDF5[(HDF5 Dataset)]
+  end
+
+  subgraph Train ["3. Train"]
+    HDF5 --> TRAINING["Model Training<br/>(IL repository)"]
+    TRAINING --> CKPT[(Model Checkpoint)]
+  end
+
+  subgraph Deploy ["4. Deploy"]
+    CKPT --> SERVER["imitation_service_server"]
+    SERVER --> |predict_action| AICTRL[AI Controller]
+    AICTRL --> |armpi_command| ROBOT[Robot Arm]
+  end
+```
 
 ## Related Repositories
 

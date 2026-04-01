@@ -123,7 +123,81 @@ roslaunch myapp run_ai_controller.launch model_name:=<モデル名>
 
 ## アーキテクチャ
 
-> アーキテクチャ図は今後追加予定です。
+### ROS ノード間通信
+
+```mermaid
+graph LR
+  subgraph センサ
+    CAM[/usb_cam/]
+    JS[/joint_states/]
+  end
+
+  subgraph コントローラ ["armpi_controller (generic_robot_controller)"]
+    KB[キーボードモード]
+    AI[AI モード]
+  end
+
+  subgraph 推論 ["ai_model_service (imitation_service_server)"]
+    MODEL[CNN+MLP / Diffusion Policy]
+  end
+
+  subgraph ハードウェア制御
+    CTRL["armpi_control (armpi_control_main)"]
+    IK["armpi_servo (ik_action_server)"]
+    CHASSIS[armpi_chassis]
+  end
+
+  subgraph データ収集 ["collect_data"]
+    COLLECT[CollectData ノード]
+    BAG[(ROS Bag)]
+  end
+
+  CAM -- "/usb_cam/image_raw" --> AI
+  JS -- "/joint_states" --> AI
+  AI -- "predict_action srv" --> MODEL
+  MODEL -- "RobotCommand" --> AI
+
+  KB -- "armpi_command" --> CTRL
+  AI -- "armpi_command" --> CTRL
+
+  CTRL -- "compute_arm_ik_and_move srv" --> IK
+  CTRL -- "set_velocity" --> CHASSIS
+  IK -- "multi_id_pos_dur" --> SERVO[サーボ]
+
+  CAM -- "/usb_cam/image_raw" --> COLLECT
+  JS -- "/joint_states" --> COLLECT
+  CTRL -- "get_command" --> COLLECT
+  COLLECT --> BAG
+```
+
+### データパイプライン
+
+```mermaid
+flowchart LR
+  subgraph 収集 ["1. 収集"]
+    HUMAN[人間オペレータ] --> |キーボード操作| CONTROLLER[armpi_controller]
+    CAMERA[カメラ] --> RECORD[collect_data]
+    JOINTS[関節状態] --> RECORD
+    CONTROLLER --> |get_command| RECORD
+    RECORD --> ROSBAG[(ROS Bag)]
+  end
+
+  subgraph 変換 ["2. 変換"]
+    ROSBAG --> SCRIPT["convert_bag_to_h5.py"]
+    SCRIPT --> HDF5[(HDF5 データセット)]
+  end
+
+  subgraph 学習 ["3. 学習"]
+    HDF5 --> TRAINING["モデル学習<br/>(IL リポジトリ)"]
+    TRAINING --> CKPT[(学習済みモデル)]
+  end
+
+  subgraph 実行 ["4. 実行"]
+    CKPT --> SERVER["imitation_service_server"]
+    SERVER --> |predict_action| AICTRL[AI コントローラ]
+    AICTRL --> |armpi_command| ROBOT[ロボットアーム]
+  end
+```
 
 ## 関連リポジトリ
 
