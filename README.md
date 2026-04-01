@@ -1,3 +1,5 @@
+[English](README.md) | [日本語](README_ja.md)
+
 # ArmPi - Imitation Learning for Robot Arm Control
 
 An imitation learning system for the HiWonder ArmPi robot arm that collects human demonstrations, trains CNN+MLP policies, and deploys them for autonomous control.
