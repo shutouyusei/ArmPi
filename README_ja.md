@@ -119,7 +119,13 @@ roslaunch myapp run_ai_controller.launch model_name:=<モデル名>
 
 ## デモ
 
-> デモ動画・GIF は今後追加予定です。
+### 自律制御（推論）
+
+https://github.com/shutouyusei/ArmPi/releases/download/demo-videos/armpi_inference.mp4
+
+### 遠隔操作（データ収集）
+
+https://github.com/shutouyusei/ArmPi/releases/download/demo-videos/armpi_teleop.mp4
 
 ## アーキテクチャ
 

@@ -119,7 +119,13 @@ This launches the inference server and controller in AI mode.
 
 ## Demo
 
-> Demo videos and GIFs will be added here.
+### Autonomous Control (Inference)
+
+https://github.com/shutouyusei/ArmPi/releases/download/demo-videos/armpi_inference.mp4
+
+### Teleoperation (Data Collection)
+
+https://github.com/shutouyusei/ArmPi/releases/download/demo-videos/armpi_teleop.mp4
 
 ## Architecture
 
