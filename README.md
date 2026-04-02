@@ -117,6 +117,12 @@ roslaunch myapp run_ai_controller.launch model_name:=<your_model>
 
 This launches the inference server and controller in AI mode.
 
+## Results
+
+- Trained on **30 human demonstrations** of an object grasping task
+- Implemented and compared **3 algorithms**: MLP (baseline), ACT, and Diffusion Policy
+- The trained policy successfully performs autonomous grasping as shown in the demo below
+
 ## Demo
 
 ### Autonomous Control (Inference)
