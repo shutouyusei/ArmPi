@@ -121,11 +121,11 @@ This launches the inference server and controller in AI mode.
 
 ### Autonomous Control (Inference)
 
-https://github.com/shutouyusei/ArmPi/releases/download/demo-videos/armpi_inference.mp4
+<video src="https://github.com/shutouyusei/ArmPi/releases/download/demo-videos/armpi_inference.mp4" controls></video>
 
 ### Teleoperation (Data Collection)
 
-https://github.com/shutouyusei/ArmPi/releases/download/demo-videos/armpi_teleop.mp4
+<video src="https://github.com/shutouyusei/ArmPi/releases/download/demo-videos/armpi_teleop.mp4" controls></video>
 
 ## Architecture
 
