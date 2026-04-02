@@ -121,11 +121,11 @@ roslaunch myapp run_ai_controller.launch model_name:=<モデル名>
 
 ### 自律制御（推論）
 
-<video src="https://github.com/shutouyusei/ArmPi/releases/download/demo-videos/armpi_inference.mp4" controls></video>
+https://github.com/user-attachments/assets/419001f8-26ad-404e-b6fc-d30eb1c5be2c
 
 ### 遠隔操作（データ収集）
 
-<video src="https://github.com/shutouyusei/ArmPi/releases/download/demo-videos/armpi_teleop.mp4" controls></video>
+https://github.com/user-attachments/assets/c31b3906-e0b3-4ec7-a45d-a77cfb91e2be
 
 ## アーキテクチャ
 
